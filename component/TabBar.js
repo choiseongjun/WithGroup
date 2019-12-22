@@ -4,6 +4,9 @@ import TabBarItem from './TabBarItem';
 
 
 const TabBar = ({setType, type}) => (
+    
+    
+
     <View style={styles.container}>
 
             <TabBarItem type={type} title='모임'

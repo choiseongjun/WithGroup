@@ -6,6 +6,8 @@ import LoginScreen from './component/LoginScreen';
 import MainScreen from './component/MainScreen';
 import FindPasswordScreen from './component/FindPasswordScreen';
 import CreateScreen from './component/CreateScreen';
+import MoimDetail from './component/MoimDetail';
+import CreateStudy from './component/CreateStudy';
 
 const AppNavigator = createStackNavigator({
   HOME:{
@@ -26,14 +28,23 @@ const AppNavigator = createStackNavigator({
       header: null
     },
   },
+  CREATESTUDY:{
+    screen:CreateStudy
+  },
+  MoimDetail:{
+    screen: MoimDetail,
+    navigationOptions:{
+      header: null
+    },
+  },
   Create:{
     screen: CreateScreen,
     navigationOptions:{
       header: null
     },
   },
- 
 
+ 
 
 })
 

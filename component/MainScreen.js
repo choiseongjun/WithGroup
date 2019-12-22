@@ -1,47 +1,49 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet,FlatList} from 'react-native';
+import {View,StyleSheet,TouchableOpacity,Text} from 'react-native';
 import TabBar from './TabBar';
-import axios from 'axios';
-
+import Data1 from './Data1';
 class MainScreen extends Component{
     constructor(props){
         super(props)
         this.state ={
-            type:'',
-            moims:[]
+          type:'지역'
         }
         this.setType = this.setType.bind(this)
+        this.getScreen = this.getScreen.bind(this)
     }
 
-    componentDidMount(){
-  
-    
-        axios.get(`http://52.79.57.173/rest/moimlistView`)
-        .then(res => {
-          const moims = res.data.moimList.content;
-          this.setState({ moims });
-        })
-    }
     setType(type){
         this.setState({type})
       }
+    getScreen(){
+        if(this.state.type === '모임'){
+           return  <Data1 >
+               {this.props}</Data1>
+        }
+        console.log('type:', this.state.type)
+        console.log('MainScreen')
+        console.log(this.props)
+    }
     render(){
-        const {moims} = this.state;
-   
-    console.log(moims);
+
         const{type} = this.state;
-        return(
+         return(
             <View style={styles.container}>
                 <View style={{flex:1}}>
-                <FlatList
-                    data={moims}
-                renderItem={({item}) => <Text>타이틀:{item.title}:소개{item.intro}작성자:{item.people.name}</Text>
-                                            }
-                    />    
-                </View>
-                                    
-                <TabBar type={type} setType={this.setType} />     
+                    {this.getScreen()}
                 
+                </View>
+                <TouchableOpacity 
+                    onPress={() => this.props.navigation.navigate('CREATESTUDY')}
+                    style={styles.createButton}>
+                    <View style={styles.create}>
+                        <Text style={styles.createText}>개설+</Text>
+                    </View>  
+                </TouchableOpacity>
+                <TabBar type={type} setType={this.setType}/>
+
+                
+                                         
            </View>
         );
     }
@@ -52,9 +54,25 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         backgroundColor:'#F5F5F5',
-        alignItems:'center',
       
     },
+    create:{
+        width:70,
+        height:70,
+        borderRadius:35,
+        backgroundColor:'#FF6347',
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    createText:{
+        fontSize:18,
+        color:'#F8F8FF'
+    },
+    createButton:{
+        alignItems:'flex-end',
+        marginBottom:30,
+        marginRight:20
+    }
 
 })
 
