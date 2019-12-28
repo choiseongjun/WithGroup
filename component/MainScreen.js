@@ -33,13 +33,13 @@ class MainScreen extends Component{
                     {this.getScreen()}
                 
                 </View>
-                <TouchableOpacity 
+                {/* <TouchableOpacity 
                     onPress={() => this.props.navigation.navigate('CREATESTUDY')}
                     style={styles.createButton}>
                     <View style={styles.create}>
                         <Text style={styles.createText}>개설+</Text>
                     </View>  
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TabBar type={type} setType={this.setType}/>
 
                 
@@ -56,23 +56,6 @@ const styles = StyleSheet.create({
         backgroundColor:'#F5F5F5',
       
     },
-    create:{
-        width:70,
-        height:70,
-        borderRadius:35,
-        backgroundColor:'#FF6347',
-        alignItems:'center',
-        justifyContent:'center'
-    },
-    createText:{
-        fontSize:18,
-        color:'#F8F8FF'
-    },
-    createButton:{
-        alignItems:'flex-end',
-        marginBottom:30,
-        marginRight:20
-    }
 
 })
 
