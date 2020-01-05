@@ -7,7 +7,7 @@ import {View,
         TouchableOpacity} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FooterButton from './FooterButton';
-
+import axios from 'axios';
 
 const BLUE = '#428AF8';
 const LIGHT_GRAY = '#D3D3D3';
@@ -27,18 +27,21 @@ class LoginScreen extends Component{
      handlePassword = (text) => {
         this.setState({ password: text })
      }
-     login = (email, pass) => {
-        alert('email: ' + email + ' password: ' + pass)
-        {this.props.navigation.navigate('Main')}
-       const LoginRequest ={email,pass}
-
+     login = (email, password) => {
+        alert('email: ' + email + ' password: ' + password)
+        
+       const loginRequest ={email,password}
+       
+       axios.post(`http://192.168.0.2:8080/signin`,{email:email,
+       password:password})
+       .then(res => {
+         console.log(res);
+         console.log(res.data);
+         {this.props.navigation.navigate('Main')}
+       })
+   }
        
 
-        console.log(LoginRequest);
-      
-      }
-   
-    
     handleFocus = event => {
         this.setState({ isFocused: true});
     };
