@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet,Button,FlatList,Image,TouchableOpacity, Dimensions} from 'react-native';
+import {View, Text, StyleSheet,Button,FlatList,Image,TouchableOpacity, Dimensions, Alert} from 'react-native';
 import axios from 'axios';
 //import defaultimg from '../image/ddd.jpg';
 
@@ -89,10 +89,14 @@ class Data1 extends Component{
                                  
                                     <TouchableOpacity
                                         onPressOut={() => 
-                                            {console.log('모달',item.peopleList.map(x=>x.name))}
+                                            // {console.log('모달',item.peopleList.map(x=>x.name))}
                                             // <View style={styles.modar}>
                                             //    <Text>{item.peopleList.map(x=>x.name)}</Text> 
                                             // </View>
+                                            Alert.alert(
+                                                'Parties',
+                                                String(item.peopleList.map(x=>x.name))
+                                            )
                                             }>
                                             <Text style={styles.peopleNum}>{item.peopleList.length}</Text>
                                     </TouchableOpacity>
