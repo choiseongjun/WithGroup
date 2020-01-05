@@ -61,7 +61,7 @@ class Data1 extends Component{
         return(
             <View style={styles.container}>
                 <View style={styles.elem}>
-                    <View styke={styles.userInfo}>
+                    <View style={styles.userInfo}>
                         <FlatList
                             data={moims}
                             renderItem={({item}) =>  
