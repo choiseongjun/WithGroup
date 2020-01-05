@@ -32,7 +32,7 @@ class LoginScreen extends Component{
         
        const loginRequest ={email,password}
        
-       axios.post(`http://192.168.0.2:8080/signin`,{email:email,
+       axios.post(`http://52.79.57.173/signin`,{email:email,
        password:password})
        .then(res => {
          console.log(res);
