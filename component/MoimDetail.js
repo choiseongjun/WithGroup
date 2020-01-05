@@ -70,7 +70,7 @@ componentDidMount(){
                                                 </TouchableOpacity>
                                             </View>
                                             }
-                                        keyExtractor={item => item.id}/>
+                                        keyExtractor={item => item.id}/>  
                                     <Button title='   닫기   '
                                             onPress = {() => {  
                                                 this.setState({ isVisible:!this.state.isVisible})}}
