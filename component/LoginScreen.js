@@ -17,10 +17,27 @@ class LoginScreen extends Component{
         super(props);
         this.state ={
             isFocused: false,
-            id:'',
-            pw:''
+            email:'',
+            password:''
         }
     }
+    handleEmail = (text) => {
+        this.setState({ email: text })
+     }
+     handlePassword = (text) => {
+        this.setState({ password: text })
+     }
+     login = (email, pass) => {
+        alert('email: ' + email + ' password: ' + pass)
+        {this.props.navigation.navigate('Main')}
+       const LoginRequest ={email,pass}
+
+       
+
+        console.log(LoginRequest);
+      
+      }
+   
     
     handleFocus = event => {
         this.setState({ isFocused: true});
@@ -39,7 +56,7 @@ class LoginScreen extends Component{
                     <Feather name='mail' size={30}/>
                     <TextInput 
                         style={styles.idtext}
-                        onChangeText={(id) => this.setState({id})}
+                        onChangeText = {this.handleEmail}
                         autoCorrect={false}
                         placeholder=":"
                         underlineColorAndroid={
@@ -53,7 +70,7 @@ class LoginScreen extends Component{
                     <Feather name='lock' size={30}/>
                     <TextInput 
                         style={styles.idtext}
-                        onChangeText={(pw) => this.setState({pw})}
+                        onChangeText = {this.handlePassword}
                         autoCorrect={false}
                         placeholder=":"
                         secureTextEntry={true}
@@ -67,7 +84,9 @@ class LoginScreen extends Component{
                 <FooterButton 
                     buttonText='Login'
                     style={styles.loginButton}
-                    onPress={() => this.props.navigation.navigate('Main')}/>
+                    onPress = {
+                        () => this.login(this.state.email, this.state.password)
+                     }/>
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate('Find')}>
                     <Text style={styles.forgotPassword}>Forgot to your Password?</Text>

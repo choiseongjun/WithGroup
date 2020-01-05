@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet,Button,FlatList,Image,TouchableOpacity, Dimensions} from 'react-native';
 import axios from 'axios';
-import defaultimg from '../image/ddd.jpg';
+//import defaultimg from '../image/ddd.jpg';
 
 const{width, height} = Dimensions.get('window');
 
@@ -10,7 +10,7 @@ class Data1 extends Component{
         super(props)
         this.state ={
             moims:[],
-        
+            names:[]
             
           
         }
@@ -57,7 +57,7 @@ class Data1 extends Component{
 
         const {moims} = this.state;
         const logo = require('../image/ddd.jpg');
-
+   
         return(
             <View style={styles.container}>
                 <View style={styles.elem}>
@@ -68,25 +68,38 @@ class Data1 extends Component{
                             <TouchableOpacity 
                             onPress={() => this.props.children.navigation.navigate('MoimDetail',{id: item.id} )}
                             style={styles.section}>
-                                  <Image 
+                                <View style={{flexDirection:'row',flex:1}}>
+                                <Image 
                                     source={item.imageName === null ? require('../image/ddd.jpg')  : {uri:'http://52.79.57.173/getMoimImage/'+item.imageName+'.'+item.imageExtension}} 
                                     style={{width: 100, height: 75}} 
                                     /> 
-                                <View style={styles.textMoim}>
-                                    <Text style={{fontSize:15, fontWeight:'bold',marginTop:1}}>
-                                        {item.title}
-                                    </Text> 
-                                    <Text>
-                                        {item.intro}
-                                    </Text>
-                                    <Text>
-                                        {item.people.name}
-                                    </Text>
-                           
+                                    <View style={styles.textMoim}>
+                                        <Text style={{fontSize:15, fontWeight:'bold',marginTop:1}}>
+                                            {item.title}
+                                        </Text> 
+                                        <Text>
+                                            {item.intro}
+                                        </Text>
+                                        <Text>
+                                            {item.people.name}
+                                        </Text>
+                            
+                                    </View>
                                 </View>
-                               
+                                 
+                                    <TouchableOpacity
+                                        onPressOut={() => 
+                                            {console.log('모달',item.peopleList.map(x=>x.name))}
+                                            // <View style={styles.modar}>
+                                            //    <Text>{item.peopleList.map(x=>x.name)}</Text> 
+                                            // </View>
+                                            }>
+                                            <Text style={styles.peopleNum}>{item.peopleList.length}</Text>
+                                    </TouchableOpacity>
+                             
                             </TouchableOpacity> }/>    
-
+                      
+                              
                     </View>
                
                     <View style={styles.createSection}>
@@ -110,10 +123,14 @@ class Data1 extends Component{
                     
         );
     }
+    // _onCliked = () =>{
+    //     <Text>{item.peopleList.map(x=>x.name)}</Text>
+    // }
 }
 const styles = StyleSheet.create({
     container:{
         flex:1,
+  
         
     },
    
@@ -125,6 +142,7 @@ const styles = StyleSheet.create({
         width:width-0,
         height:75,
         marginTop:3,
+     
         
     },
   
@@ -150,11 +168,13 @@ const styles = StyleSheet.create({
     },
     userInfo:{
         flexDirection:'row',
-        
+        justifyContent:'space-between',
+ 
         
     },
     elem:{
         width:width-0,
+      
     },
     createSection:{
         flex:1,
@@ -166,7 +186,21 @@ const styles = StyleSheet.create({
         flexDirection:'column',
         marginLeft:5
     },
-   
+    peopleNum:{
+        margin:20,
+        fontSize:22,
+        color:'#FF8C00',
+        flex:1,
+        fontWeight:'bold',
+        textDecorationLine:'underline'
+    },
+    modar:{
+        width:300,
+        height:300,
+        backgroundColor:'gray',
+        flex:1
+    }
+
 
 })
 
