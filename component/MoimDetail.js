@@ -40,7 +40,7 @@ componentDidMount(){
       this.setState({ moimDetail,moimPeople,moimLeader });
       console.log(res.data)
     }) 
-
+ 
 
 }
 // _PartiesPeople(){ //함수를 써야 map을 return 페이지에 돌릴수 있다.
