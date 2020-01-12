@@ -39,7 +39,7 @@ componentDidMount(){
       const moimLeader = res.data.moimDetail.people;
       this.setState({ moimDetail,moimPeople,moimLeader });
       console.log(res.data)
-    }) 
+    })  
  
 
 }
