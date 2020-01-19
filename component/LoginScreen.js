@@ -8,6 +8,8 @@ import {View,
 import Feather from 'react-native-vector-icons/Feather';
 import FooterButton from './FooterButton';
 import axios from 'axios';
+import { connect } from 'react-redux';
+
 
 const BLUE = '#428AF8';
 const LIGHT_GRAY = '#D3D3D3';
@@ -18,7 +20,7 @@ class LoginScreen extends Component{
         this.state ={
             isFocused: false,
             email:'',
-            password:''
+            password:'',
         }
     }
     handleEmail = (text) => {
@@ -32,11 +34,15 @@ class LoginScreen extends Component{
         
        const loginRequest ={email,password}
        
+    //    axios.post(`http://52.79.57.173/signin`,{email:email,
        axios.post(`http://52.79.57.173/signin`,{email:email,
        password:password})
        .then(res => {
-         console.log(res);
+         console.log("res : ", res);
          console.log(res.data);
+         const sampletoken = 'sampletoken_abcdefg'
+
+         {this.props.reduxSetAccessToken(sampletoken)}
          {this.props.navigation.navigate('Main')}
        })
    }
@@ -47,6 +53,7 @@ class LoginScreen extends Component{
     };
 
     render(){
+        console.log("in LoginScreen this.props.tokeninit : ", this.props.tokeninit);
         const {isFocused} = this.state;
         return(
             <View style={styles.container}>
@@ -151,4 +158,25 @@ const styles = StyleSheet.create({
   
 })
 
-export default LoginScreen;
+// Map State To Props (Redux Store Passes State To Component)
+const mapStateToProps = (state) => {
+    console.log('State:');
+    console.log(state);
+  
+    // Redux Store --> Component
+    return {
+      tokeninit: state.core.accessToken,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        reduxSetAccessToken: (data) => dispatch({
+            type: 'SET_TOKEN',
+            token: data,
+        }),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
+// export default LoginScreen;

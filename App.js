@@ -1,3 +1,6 @@
+import { Provider } from 'react-redux';
+import React from 'react';
+
 import {createStackNavigator} from 'react-navigation-stack';
 import {createAppContainer} from 'react-navigation';
 
@@ -8,6 +11,10 @@ import FindPasswordScreen from './component/FindPasswordScreen';
 import CreateScreen from './component/CreateScreen';
 import MoimDetail from './component/MoimDetail';
 import CreateStudy from './component/CreateStudy';
+
+import {store} from './store/store';
+
+// import App from './component/Appstorage/appdrawer';
 
 const AppNavigator = createStackNavigator({
   HOME:{
@@ -44,11 +51,29 @@ const AppNavigator = createStackNavigator({
     },
   },
 
- 
-
 })
 
+let Navigation = createAppContainer(AppNavigator);
+
+// export default function App() {
+//     return (
+//       <Provider Store={Store}>
+//         <Navigation />
+//       </Provider>
+//     )
+// }
+export default class App extends React.Component {
+  render() {
+    console.log("==========App.js render()============")
+    return (
+      <Provider store={store}>
+        <Navigation />
+      </Provider>
+    );
+  }
+}
 
 
-export default createAppContainer(AppNavigator);
+
+// export default createAppContainer(AppNavigator);
 
