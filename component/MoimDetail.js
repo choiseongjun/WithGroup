@@ -25,8 +25,10 @@ class MoimDetail extends Component{
     
     }
 
+//groupbutton에서 selectedIndex 값 봐꿔주는 함수
 updateIndex (selectedIndex){
-    this.setState({selectedIndex})
+    this.setState({selectedIndex:selectedIndex})
+    console.log('selectedIndex',selectedIndex)
 }
 
 componentDidMount(){
@@ -38,7 +40,7 @@ componentDidMount(){
       const moimPeople = res.data.moimDetail.peopleList;
       const moimLeader = res.data.moimDetail.people;
       this.setState({ moimDetail,moimPeople,moimLeader });
-      console.log(res.data)
+   //   console.log(res.data)
     })  
  
 
@@ -55,30 +57,30 @@ componentDidMount(){
         const component2 = () => <Text>사진첩 보기</Text>
         const component3 = () => <Text>세팅</Text>
         const buttons = [{ element: component1 }, { element: component2 }, { element: component3 }]
-        let sampleDate = [
+        let sampleData = [
             {
-                value: 50,
+                value: 33,
                 label: 'Marketing',
                 color: 'powderblue'
             },
             {
-                value:40,
+                value:33,
                 label: 'Sales',
                 color: 'tomato'
             },
             {
-                value:25,
+                value:34,
                 label:'Support',
                 color: 'orange'
             }
         ]
         
         
-        console.log(this.props.navigation.state.params.id)
+        //console.log(this.props.navigation.state.params.id)
         const {moimDetail, moimPeople, selectedIndex,moimLeader} = this.state;
-        console.log("moimDetail",moimDetail)
-        console.log('이미지', moimDetail.imageName)
-        console.log('조장', moimLeader)
+        //console.log("moimDetail",moimDetail)
+        //console.log('이미지', moimDetail.imageName)
+        //console.log('조장', moimLeader)
         return(
             <View style={styles.container}>
              <ScrollView>
@@ -144,8 +146,9 @@ componentDidMount(){
                             </View>                                           
                         </View>
 
-                        <View style={{justifyContent:'center', alignItems:'center', margin:3}}>
-                          <PureChart data={sampleDate} type = 'pie'/>
+                        <View style={{justifyContent:'center', alignItems:'center', margin:3, flexDirection:'column'}}>
+                          <Text>진행상황</Text>
+                          <PureChart data={sampleData} type = 'pie'/>
                         </View>
                         
                  
