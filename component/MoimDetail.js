@@ -8,7 +8,7 @@ import {Button, ButtonGroup} from 'react-native-elements';
 
 
 const {width, height} = Dimensions.get('window');
-
+ 
 class MoimDetail extends Component{
     constructor(props){
         super(props)

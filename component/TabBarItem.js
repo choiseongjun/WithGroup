@@ -9,7 +9,7 @@ const TabBarItem = ({border, title, selected, setType, type, item, it}) =>(
      underlayColor = '#efefef'
      onPress={setType}
      style={[
-         styles.item, 
+         styles.item,  
          selected ? styles.selected : null,
          border ? styles.border : null,
          type === title ? styles.selected : null]}>

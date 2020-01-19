@@ -12,7 +12,7 @@ const TabBar = ({setType, type}) => (
             <TabBarItem type={type} title='모임'
                 setType={() => setType('모임')}
                 item={'home'}/> 
-        
+         
             <TabBarItem type={type} title='지역'
                 setType={() => setType('지역')}
                 item={'location-pin'}/>
