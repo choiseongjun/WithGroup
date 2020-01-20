@@ -3,8 +3,8 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Modal,  FlatList, Image, Dimensions, ScrollView} from 'react-native';
 import axios from 'axios';
 import PureChart from 'react-native-pure-chart';
-import {Button, ButtonGroup} from 'react-native-elements';
-
+import {Button} from 'react-native-elements';
+import ButtonGroup from './ButtonGroup';
 
 
 const {width, height} = Dimensions.get('window');
@@ -18,8 +18,16 @@ class MoimDetail extends Component{
             DataId:this.props.navigation.state.params.id,
             isVisible: false,
             isClicked:false,
-            selectedIndex:1, // 0,1,2 -> component 1,2,3
-            moimLeader:[]
+            selectedIndex:0, // 0,1,2 -> component 1,2,3
+            moimLeader:[],
+            name:[
+                {id:1, title:'계획공유'},
+                {id:2, title:'사진첩'},
+                {id:1, title:'채팅'},
+                {id:1, title:'팀홈'},
+                {id:1, title:'메모리스트'},
+                {id:1, title:'게시판'},
+              ]
         }
         this.updateIndex = this.updateIndex.bind(this)
     
@@ -29,6 +37,13 @@ class MoimDetail extends Component{
 updateIndex (selectedIndex){
     this.setState({selectedIndex:selectedIndex})
     console.log('selectedIndex',selectedIndex)
+    if(selectedIndex === 0){
+        this.props.navigation.navigate('MoimDetail')
+    }
+    else if(selectedIndex === 1){
+        this.props.navigation.navigate('Share')
+    }
+
 }
 
 componentDidMount(){
@@ -53,10 +68,14 @@ componentDidMount(){
 
 
     render(){
-        const component1 = () => <Text>계획공유</Text>
-        const component2 = () => <Text>사진첩 보기</Text>
-        const component3 = () => <Text>세팅</Text>
-        const buttons = [{ element: component1 }, { element: component2 }, { element: component3 }]
+        // const component1 = () => <Text>계획 공유</Text>
+        // const component2 = () => <Text>사진첩 보기</Text>
+        // const component3 = () => <Text>세팅</Text>
+        // const component4 = () => <Text>팀홈</Text>
+        // const component5 = () => <Text>메모리스트</Text>
+        // const component6 = () => <Text>게시판</Text>
+
+        // const buttons = [{ element: component1 }, { element: component2 }, { element: component3 },{ element: component4 }, { element: component5 }, { element: component6 }]
         let sampleData = [
             {
                 value: 33,
@@ -101,12 +120,6 @@ componentDidMount(){
                             />
                     </View>
                 </View>
-                <ButtonGroup 
-                    onPress={this.updateIndex}
-                    selectedIndex={selectedIndex}
-                    buttons={buttons}
-                    containerStyle={{height:50}}
-                /> 
 
                      <Modal
                         animationType={'slide'}
@@ -155,6 +168,16 @@ componentDidMount(){
                 
               
              </ScrollView>
+             {/* <ButtonGroup 
+                    onPress={this.updateIndex}
+                    selectedIndex={selectedIndex}
+                    buttons={buttons}
+                    containerStyle={{height:50}}
+                />  */}
+                <View stlye={{width:"100%", height:"25%", flex:1}}>
+                    <ButtonGroup Data = {this.state.name}/>
+                </View>
+
                 
             </View>
         );

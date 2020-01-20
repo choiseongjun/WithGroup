@@ -20,6 +20,11 @@ const TabBar = ({setType, type}) => (
             <TabBarItem type={type} title='내모임'
                 setType={() => setType('내모임')}
                 item={'man'}/>
+
+            <TabBarItem type={type} title='커뮤니티'
+                setType={() => setType('커뮤니티')}
+                item={'users'}/>
+
             <TabBarItem type={type} title='설정'
                 setType={() => setType('설정')}
                 it={'setting'}/>
