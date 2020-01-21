@@ -5,8 +5,7 @@ import axios from 'axios';
 import PureChart from 'react-native-pure-chart';
 import {Button} from 'react-native-elements';
 import ButtonGroup from './ButtonGroup';
-
-
+import SharePlan from './SharePlan';
 const {width, height} = Dimensions.get('window');
  
 class MoimDetail extends Component{
@@ -18,48 +17,46 @@ class MoimDetail extends Component{
             DataId:this.props.navigation.state.params.id,
             isVisible: false,
             isClicked:false,
-            selectedIndex:0, // 0,1,2 -> component 1,2,3
             moimLeader:[],
-            name:[
-                {id:1, title:'계획공유'},
-                {id:2, title:'사진첩'},
-                {id:1, title:'채팅'},
-                {id:1, title:'팀홈'},
-                {id:1, title:'메모리스트'},
-                {id:1, title:'게시판'},
-              ]
+            type:'팀홈',
+            buttonClicked:true
+            
+      
         }
-        this.updateIndex = this.updateIndex.bind(this)
+        this.setType = this.setType.bind(this)
+        this._controlScreen = this._controlScreen.bind(this)
+    }
     
-    }
+    setType(type){
+        this.setState({type})
 
-//groupbutton에서 selectedIndex 값 봐꿔주는 함수
-updateIndex (selectedIndex){
-    this.setState({selectedIndex:selectedIndex})
-    console.log('selectedIndex',selectedIndex)
-    if(selectedIndex === 0){
-        this.props.navigation.navigate('MoimDetail')
-    }
-    else if(selectedIndex === 1){
-        this.props.navigation.navigate('Share')
-    }
+        if(type !== '팀홈'){
+            this.setState({buttonClicked:false})
+        }else if(type ==='팀홈'){
+            this.setState({buttonClicked:true})
+        }
+        }
+     _controlScreen(){
+        if(this.state.type === '계획공유'){
+            return <SharePlan />
+        }
+    } 
+   
+    
 
-}
-
-componentDidMount(){
-    const Data = this.state.DataId;   
-    axios.get(`http://52.79.57.173/rest/moimlistView/moimdetailView/${Data}`)
-    .then(res => {
-     
-      const moimDetail = res.data.moimDetail;
-      const moimPeople = res.data.moimDetail.peopleList;
-      const moimLeader = res.data.moimDetail.people;
-      this.setState({ moimDetail,moimPeople,moimLeader });
-   //   console.log(res.data)
-    })  
+    componentDidMount(){
+        const Data = this.state.DataId;   
+        axios.get(`http://52.79.57.173/rest/moimlistView/moimdetailView/${Data}`)
+        .then(res => {
+        
+        const moimDetail = res.data.moimDetail;
+        const moimPeople = res.data.moimDetail.peopleList;
+        const moimLeader = res.data.moimDetail.people;
+        this.setState({ moimDetail,moimPeople,moimLeader });
+        })  
+    
  
-
-}
+    }
 // _PartiesPeople(){ //함수를 써야 map을 return 페이지에 돌릴수 있다.
 //     const {isClicked, moimDetail} = this.state;
 //     return isClicked ? <Text style={styles.peopleList}>{moimDetail.peopleList.map(x=>x.name)}</Text> : null
@@ -68,14 +65,7 @@ componentDidMount(){
 
 
     render(){
-        // const component1 = () => <Text>계획 공유</Text>
-        // const component2 = () => <Text>사진첩 보기</Text>
-        // const component3 = () => <Text>세팅</Text>
-        // const component4 = () => <Text>팀홈</Text>
-        // const component5 = () => <Text>메모리스트</Text>
-        // const component6 = () => <Text>게시판</Text>
-
-        // const buttons = [{ element: component1 }, { element: component2 }, { element: component3 },{ element: component4 }, { element: component5 }, { element: component6 }]
+      
         let sampleData = [
             {
                 value: 33,
@@ -93,90 +83,90 @@ componentDidMount(){
                 color: 'orange'
             }
         ]
-        
-        
-        //console.log(this.props.navigation.state.params.id)
-        const {moimDetail, moimPeople, selectedIndex,moimLeader} = this.state;
-        //console.log("moimDetail",moimDetail)
-        //console.log('이미지', moimDetail.imageName)
-        //console.log('조장', moimLeader)
+        const {moimDetail, moimPeople, type,moimLeader,buttonClicked} = this.state;
+   
         return(
             <View style={styles.container}>
-             <ScrollView>
-                 {/* <Text>{this.props.navigation.state.params.id}</Text> */}
-                 {/* <Text>제목:{moimDetail.title}</Text>
-                 <Text>소개:{moimDetail.intro}</Text>
-                 <Text>인원수:{moimDetail.peopleLimit}</Text> */}
-                 <Image 
-                    source={moimDetail.imageName === null ? require('../image/ddd.jpg')  : {uri:'http://52.79.57.173/getMoimImage/'+moimDetail.imageName+'.'+moimDetail.imageExtension}} 
-                    style={{width: width-5, height: 400}} 
-                />  
-                <View style={styles.intro}>
-                    <Text>소개:{moimDetail.intro}</Text>
-                    <View style={styles.joinButton}>
-                        <Button
-                            title="팀 가입하기"
-                            type="outline"
-                            />
-                    </View>
-                </View>
+                <View style={{flex:1}}>
+                {buttonClicked ? 
+                (
+                    <ScrollView>
 
-                     <Modal
-                        animationType={'slide'}
-                        transparent={false}
-                        visible={this.state.isVisible}
-                         onRequestClose = {() =>{ console.log("Modal has been closed.") } }>
-                                <View style={styles.modal}>
-                                    {/* {this._PartiesPeople()} */}
-                                    <FlatList 
-                                        data={moimPeople}
-                                        renderItem={({item}) => 
-                                            <View style={styles.friends}>
-                                                <TouchableOpacity>
-                                                    <Text style={styles.nameText}>✔  {item.name}</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                            }
-                                        keyExtractor={item => item.id}/>  
-                                    <Button title='   닫기   '
-                                            onPress = {() => {  
-                                                this.setState({ isVisible:!this.state.isVisible})}}
-                                            color={'gray'}
-                                            />
-                                
-                                </View>    
-                     </Modal>
-                        <View style={{marginTop:5}}>
-                            <View style={{flexDirection:'column',alignItems:'center'}}>
-                               <Text>조장: {moimLeader.name}</Text>
-                               <Text>Email: {moimLeader.email}</Text>
-                            </View>
-                            <View style={{width:"100%"}}>
-                                <Button   
-                                        title="모든 모임원 보기"   
-                                        onPress = {() => {this.setState({isClicked:true, isVisible: true})}}
-                                        />      
-                            </View>                                           
-                        </View>
-
-                        <View style={{justifyContent:'center', alignItems:'center', margin:3, flexDirection:'column'}}>
-                          <Text>진행상황</Text>
-                          <PureChart data={sampleData} type = 'pie'/>
-                        </View>
-                        
+                    <Image 
+                       source={moimDetail.imageName === null ? require('../image/ddd.jpg')  : {uri:'http://52.79.57.173/getMoimImage/'+moimDetail.imageName+'.'+moimDetail.imageExtension}} 
+                       style={{width: width-5, height: 400}} 
+                   />  
+                   <View style={styles.intro}>
+                       <Text>소개:{moimDetail.intro}</Text>
+                       <View style={styles.joinButton}>
+                           <Button
+                               title="팀 가입하기"
+                               type="outline"
+                               />
+                       </View>
+                   </View>
+   
+                        <Modal
+                           animationType={'slide'}
+                           transparent={false}
+                           visible={this.state.isVisible}
+                            onRequestClose = {() =>{ console.log("Modal has been closed.") } }>
+                                   <View style={styles.modal}>
+                                       {/* {this._PartiesPeople()} */}
+                                       <FlatList 
+                                           data={moimPeople}
+                                           renderItem={({item}) => 
+                                               <View style={styles.friends}>
+                                                   <TouchableOpacity>
+                                                       <Text style={styles.nameText}>✔  {item.name}</Text>
+                                                   </TouchableOpacity>
+                                               </View>
+                                               }
+                                           keyExtractor={item => item.id}/>  
+                                       <Button title='   닫기   '
+                                               onPress = {() => {  
+                                                   this.setState({ isVisible:!this.state.isVisible})}}
+                                               color={'gray'}
+                                               />
+                                   
+                                   </View>    
+                        </Modal>
+                           <View style={{marginTop:5}}>
+                               <View style={{flexDirection:'column',alignItems:'center'}}>
+                                  <Text>조장: {moimLeader.name}</Text>
+                                  <Text>Email: {moimLeader.email}</Text>
+                               </View>
+                               <View style={{width:"100%"}}>
+                                   <Button   
+                                           title="모든 모임원 보기"   
+                                           onPress = {() => {this.setState({isClicked:true, isVisible: true})}}
+                                           />      
+                               </View>                                           
+                           </View>
+   
+                           <View style={{justifyContent:'center', alignItems:'center', margin:3, flexDirection:'column'}}>
+                             <Text>진행상황</Text>
+                             <PureChart data={sampleData} type = 'pie'/>
+                           </View>
+                           
+                    
+                   
                  
-                
-              
-             </ScrollView>
-             {/* <ButtonGroup 
-                    onPress={this.updateIndex}
-                    selectedIndex={selectedIndex}
-                    buttons={buttons}
-                    containerStyle={{height:50}}
-                />  */}
-                <View stlye={{width:"100%", height:"25%", flex:1}}>
-                    <ButtonGroup Data = {this.state.name}/>
+                </ScrollView>
+                )
+                : 
+                (
+                this._controlScreen()
+                )
+                }
                 </View>
+              
+               
+                
+                 <ButtonGroup  type={type} setType={this.setType}/>
+                
+            
+             
 
                 
             </View>
@@ -241,9 +231,7 @@ const styles = StyleSheet.create({
         marginTop:3,
         flexDirection:'column',
     },
-    joinButton:{
-
-    }
+   
    
 })
 
