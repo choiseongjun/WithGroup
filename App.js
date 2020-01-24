@@ -1,7 +1,6 @@
 import {createStackNavigator} from 'react-navigation-stack';
 import {createAppContainer} from 'react-navigation';
 
-
 import LoginScreen from './component/LoginScreen';
 import MainScreen from './component/MainScreen';
 import FindPasswordScreen from './component/FindPasswordScreen';
@@ -9,46 +8,49 @@ import CreateScreen from './component/CreateScreen';
 import MoimDetail from './component/MoimDetail';
 import CreateStudy from './component/CreateStudy';
 
+import {TimeLinesScreen} from './timelines';
+
 const AppNavigator = createStackNavigator({
-  HOME:{
+  HOME: {
     screen: LoginScreen,
-    navigationOptions:{
-      header: null
+    navigationOptions: {
+      header: null,
     },
   },
-  Main:{
+  Main: {
     screen: MainScreen,
-    navigationOptions:{
-      heaer: null
+    navigationOptions: {
+      heaer: null,
     },
   },
-  Find:{
+  Find: {
     screen: FindPasswordScreen,
-    navigationOptions:{
-      header: null
+    navigationOptions: {
+      header: null,
     },
   },
-  CREATESTUDY:{
-    screen:CreateStudy
+  CREATESTUDY: {
+    screen: CreateStudy,
   },
-  MoimDetail:{
+  MoimDetail: {
     screen: MoimDetail,
-    navigationOptions:{
-      header: null
+    navigationOptions: {
+      header: null,
     },
   },
-  Create:{
+  Create: {
     screen: CreateScreen,
-    navigationOptions:{
-      header: null
+    navigationOptions: {
+      header: null,
     },
   },
-
- 
-
-})
-
-
+  TimeLine: {
+    screen: TimeLinesScreen,
+    navigationOptions: ({navigation}) => ({
+      title: '타임라인',
+      headerShown: false,
+    }),
+  },
+});
 
 export default createAppContainer(AppNavigator);
-
