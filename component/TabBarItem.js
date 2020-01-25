@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     },
     itemText:{
         color:'#777777',
-        fontSize:17
+        fontSize:13
     },
     selected:{
         backgroundColor:'#ffffff'

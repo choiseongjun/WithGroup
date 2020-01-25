@@ -3,6 +3,8 @@ import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import TabBar from './TabBar';
 import Data1 from './Data1';
 import {TimeLinesScreen} from '../timelines';
+import {AppInfomation} from '../Infomation';
+
 class MainScreen extends Component {
   constructor(props) {
     super(props);
@@ -21,6 +23,8 @@ class MainScreen extends Component {
       return <Data1>{this.props}</Data1>;
     } else if (this.state.type === 'TimeLine') {
       return <TimeLinesScreen />;
+    } else if (this.state.type ==='설정'){
+      return <AppInfomation />;
     }
     console.log('type:', this.state.type);
     console.log('MainScreen');
