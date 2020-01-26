@@ -38,7 +38,7 @@ class MoimDetail extends Component{
         }
      _controlScreen(){
         if(this.state.type === '계획공유'){
-            return <SharePlan />
+            return <SharePlan datas={this.state.moimPeople}/>
         }
     } 
    

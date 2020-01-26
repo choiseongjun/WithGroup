@@ -43,7 +43,7 @@ const TabBar = ({setType, type}) => (
       type={type}
       title="타임라인"
       setType={() => setType('TimeLine')}
-      it={'setting'}
+      item={'back-in-time'}
     />
   </View>
 );

@@ -9,6 +9,7 @@ import MoimDetail from './component/MoimDetail';
 import CreateStudy from './component/CreateStudy';
 
 import {TimeLinesScreen} from './timelines';
+import {AppInfomation} from './Infomation';
 
 const AppNavigator = createStackNavigator({
   HOME: {
@@ -51,6 +52,12 @@ const AppNavigator = createStackNavigator({
       headerShown: false,
     }),
   },
+  AppInfomation: {
+    screen: AppInfomation,
+    navigationOptions:{
+      headerShown: false
+    }
+  }
 });
 
 export default createAppContainer(AppNavigator);
