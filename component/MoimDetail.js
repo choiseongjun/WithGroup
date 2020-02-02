@@ -6,6 +6,9 @@ import PureChart from 'react-native-pure-chart';
 import {Button} from 'react-native-elements';
 import ButtonGroup from './ButtonGroup';
 import SharePlan from './SharePlan';
+import {AsyncStorage} from 'react-native';
+
+
 const {width, height} = Dimensions.get('window');
  
 class MoimDetail extends Component{
@@ -19,9 +22,14 @@ class MoimDetail extends Component{
             isClicked:false,
             moimLeader:[],
             type:'팀홈',
-            buttonClicked:true
-            
-      
+            buttonClicked:true,
+            // PeopleNo: 1
+            // moimPeopleNo: "1586"
+            PeopleNo:"",
+            moimPeopleNo:"",
+            moimNo:"",
+            accessToken:"",
+            isTeamJoin:false,
         }
         this.setType = this.setType.bind(this)
         this._controlScreen = this._controlScreen.bind(this)
@@ -42,19 +50,96 @@ class MoimDetail extends Component{
         }
     } 
    
+    teamJoin = (moimNo, tokenParam) => {
     
-
-    componentDidMount(){
-        const Data = this.state.DataId;   
-        axios.get(`http://52.79.57.173/rest/moimlistView/moimdetailView/${Data}`)
-        .then(res => {
+        //버튼 : 팀 가입하기 -> 팀 탈퇴하기 전환
+        //moimPeopleNo == null
+        console.log("teamJoin () ")
+        console.log("moimNo : ", moimNo)
+        // let token;
+        let token = this.state.accessToken;
+        console.log("in teamjoin token : ", token)
+        console.log("tokenParan : ", tokenParam)
         
-        const moimDetail = res.data.moimDetail;
-        const moimPeople = res.data.moimDetail.peopleList;
-        const moimLeader = res.data.moimDetail.people;
-        this.setState({ moimDetail,moimPeople,moimLeader });
-        })  
+
+        axios.post(`http://52.79.57.173:8080/rest/moimParticipant/${moimNo}/${this.state.PeopleNo}`)
+            // { headers: {"Authorization" : tokenParam }  } )
+            .then(res => {
+                console.log("res in")
+                console.log("res.data : ", res.data)
+                
+                if(res.data.code == "1"){
+                    this.setState({isTeamJoin:true})
+                    this.setState({moimPeopleNo: res.data.moimPeopleNo})
+                }
+            })
+    } 
     
+    teamOut = (moimPeopleNo) => {
+        console.log("teamOut()")
+        console.log("moimPeopleNo : ", this.state.moimPeopleNo)
+        axios.delete(`http://52.79.57.173:8080/rest/moimParticipant/deletejoinedPeople/${this.state.moimPeopleNo}`)
+        .then(res => {
+            if(res.data.code == "1"){
+                this.setState({isTeamJoin:false})
+
+            }
+        })
+    }
+
+    componentWillMount(){
+        console.log("componentDidMount() in MoimDetail ")
+        const Data = this.state.DataId;   
+        // axios.get(`http://52.79.57.173/rest/moimlistView/moimdetailView/${Data}`)
+
+        let token;
+        AsyncStorage.getItem("access_token").then((value) => {
+            token = value
+            console.log("token in MoimDetail: ", token);
+        
+            this.setState({accessToken : value})
+            axios.get(`http://52.79.57.173:8080/rest/moimlistView/moimdetailView/${Data}`, 
+            { headers: {"Authorization" : token }  } )
+            .then(res => {  
+                console.log("res in Moimdetail : ", res)
+                const moimPeopleNo = res.data.moimPeopleNo;
+                console.log("moimPeopleNo : ", moimPeopleNo)
+
+                //==================//
+
+                // axios.get(`http://192.168.0.193:8080`)
+                // .then(res => {
+
+                // })
+                // http://192.168.0.193:8080/rest/moimParticipant/1848
+                
+                //==================//
+
+                if(moimPeopleNo != null){
+                    console.log(" if moimPeopleNo != null 구문 ")
+                    this.setState({isTeamJoin:true})
+                }
+
+                const PeopleNo = res.data.PeopleNo;
+
+                const moimNo = res.data.moimDetail.id;
+
+                const moimDetail = res.data.moimDetail;
+                const moimPeople = res.data.moimDetail.peopleList;
+                const moimLeader = res.data.moimDetail.people;
+                // this.setState({ moimDetail,moimPeople,moimLeader });
+                this.setState({moimPeopleNo: moimPeopleNo});  
+                this.setState({PeopleNo: PeopleNo});  
+                this.setState({ moimDetail: moimDetail });  
+                this.setState({ moimPeople: moimPeople });  
+                this.setState({ moimLeader: moimLeader }); 
+                this.setState({ moimNo: moimNo }); 
+                // console.log("this.state.moimDetail : ", this.state.moimDetail) 
+                // console.log("this.state.moimPeople : ", this.state.moimPeople) 
+                // console.log("this.state.moimLeader : ", this.state.moimLeader) 
+            })
+            
+        }).done();
  
     }
 // _PartiesPeople(){ //함수를 써야 map을 return 페이지에 돌릴수 있다.
@@ -99,10 +184,21 @@ class MoimDetail extends Component{
                    <View style={styles.intro}>
                        <Text>소개:{moimDetail.intro}</Text>
                        <View style={styles.joinButton}>
-                           <Button
-                               title="팀 가입하기"
+                           { this.state.isTeamJoin == false ? 
+                            <Button title= "팀 가입하기"
+                            onPress = { () => this.teamJoin(this.state.moimNo, this.state.accessToken) }
+                            />
+                            :
+                            <Button title= "팀 탈퇴하기"
+                            onPress = { () => this.teamOut(this.state.moimPeopleNo) }
+                            />
+                             
+                           }
+                           {/* <Button
+                               title= { this.state.moimPeopleNo == null ?  "팀 가입하기" : "팀 탈퇴하기" }
                                type="outline"
-                               />
+                               onPress = { this.teamJoinHandler(this.state.moimPeopleNo, this.state.moimNo) }
+                               /> */}
                        </View>
                    </View>
    
