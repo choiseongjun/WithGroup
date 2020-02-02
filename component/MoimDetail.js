@@ -62,9 +62,7 @@ class MoimDetail extends Component{
         console.log("tokenParan : ", tokenParam)
         
 
-        axios.post(`http://172.30.1.43:8080/rest/moimParticipant/${moimNo}/${this.state.PeopleNo}`)
-        // , 
-        // axios.post(`http://172.30.1.43:8080/rest/moimParticipant/33`, 
+        axios.post(`http://52.79.57.173:8080/rest/moimParticipant/${moimNo}/${this.state.PeopleNo}`)
             // { headers: {"Authorization" : tokenParam }  } )
             .then(res => {
                 console.log("res in")
@@ -80,7 +78,7 @@ class MoimDetail extends Component{
     teamOut = (moimPeopleNo) => {
         console.log("teamOut()")
         console.log("moimPeopleNo : ", this.state.moimPeopleNo)
-        axios.delete(`http://172.30.1.43:8080/rest/moimParticipant/deletejoinedPeople/${this.state.moimPeopleNo}`)
+        axios.delete(`http://52.79.57.173:8080/rest/moimParticipant/deletejoinedPeople/${this.state.moimPeopleNo}`)
         .then(res => {
             if(res.data.code == "1"){
                 this.setState({isTeamJoin:false})
@@ -100,7 +98,7 @@ class MoimDetail extends Component{
             console.log("token in MoimDetail: ", token);
         
             this.setState({accessToken : value})
-            axios.get(`http://172.30.1.43:8080/rest/moimlistView/moimdetailView/${Data}`, 
+            axios.get(`http://52.79.57.173:8080/rest/moimlistView/moimdetailView/${Data}`, 
             { headers: {"Authorization" : token }  } )
             .then(res => {  
                 console.log("res in Moimdetail : ", res)
