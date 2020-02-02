@@ -8,6 +8,8 @@ import {View,
 import Feather from 'react-native-vector-icons/Feather';
 import FooterButton from './FooterButton';
 import axios from 'axios';
+import {AsyncStorage} from 'react-native';
+
 
 const BLUE = '#428AF8';
 const LIGHT_GRAY = '#D3D3D3';
@@ -30,15 +32,15 @@ class LoginScreen extends Component{
      login = (email, password) => {
         alert('email: ' + email + ' password: ' + password)
         
-       const loginRequest ={email,password}
-       
-       axios.post(`http://52.79.57.173/signin`,{email:email,
-       password:password})
-       .then(res => {
-         console.log(res);
-         console.log(res.data);
-         {this.props.navigation.navigate('Main')}
-       })
+        axios.post(`http://172.30.1.43:8080/signin`,{email:email,
+        password:password})
+        .then(res => {
+            console.log("res.data.jwt.accessToken : ", res.data.jwt.accessToken)
+            const token = res.data.jwt.accessToken;
+            AsyncStorage.setItem("access_token", token);
+
+            {this.props.navigation.navigate('Main')}
+        })
    }
        
 
