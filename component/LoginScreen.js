@@ -8,6 +8,7 @@ import {View,
 import Feather from 'react-native-vector-icons/Feather';
 import FooterButton from './FooterButton';
 import axios from 'axios';
+import { AsyncStorage } from "react-native"
 
 const BLUE = '#428AF8';
 const LIGHT_GRAY = '#D3D3D3';
@@ -28,15 +29,18 @@ class LoginScreen extends Component{
         this.setState({ password: text })
      }
      login = (email, password) => {
-        alert('email: ' + email + ' password: ' + password)
+        //alert('email: ' + email + ' password: ' + password)
         
        const loginRequest ={email,password}
        
        axios.post(`http://52.79.57.173/signin`,{email:email,
        password:password})
        .then(res => {
-         console.log(res);
-         console.log(res.data);
+        console.log(res.data.jwt.accessToken)
+         const token = res.data.jwt.accessToken;
+         AsyncStorage.setItem("access_token", token);
+
+        //  {this.props.reduxSetAccessToken(sampletoken)}
          {this.props.navigation.navigate('Main')}
        })
    }
