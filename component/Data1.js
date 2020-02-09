@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet,Button,FlatList,Image,TouchableOpacity, Dimensions, Alert} from 'react-native';
 import axios from 'axios';
+import Spinner from 'react-native-loading-spinner-overlay';
 //import defaultimg from '../image/ddd.jpg';
 
 const{width, height} = Dimensions.get('window');
@@ -13,38 +14,58 @@ class Data1 extends Component{
             names:[],
             data:[],
             page:1,
-            pageTotal:4
-          
+            pageTotal:null,
+            loading:false,
+            spinner:false,
+           
+    
         }
     }
     
       _handleLoadMore = () => {
-        // if(this.state.page == this.state.pageTotal ){
-        //     alert("마지막페이지입니다")
-        // }
-        // else{
-            this._getData();
-        // }
-      }
+        //   alert("this.state.page : " + this.state.page)
+        if(this.state.page > this.state.pageTotal ){
+            return;
+        }        
+        
+            if(!this.state.loading){
+                this._getData();
 
-    _getData = async () =>{
-        // alert("getData ")
 
-        axios.get(`http://52.79.57.173/rest/moimlistView?page=` + this.state.page)
-        .then(res => {
-        //   const moims = res.data.moimList.content;
-            this.setState({
-                moims:this.state.moims.concat(res.data.moimList.content),
-                page:this.state.page + 1
-            })
+            }
             
-            console.log("this.state.moims.length : " + this.state.moims.length)
-            console.log("this.state.page : " + this.state.page);
-            console.log("res.data : ",  res.data);
-            console.log("res.data.moimList : ", res.data.moimList)
-        })
+        
+      }
+   
+    _getData = async () =>{
+        
+        this.setState({ loading: true });
+        this.setState({ spinner: true });
+        // alert("getData ")
+        setTimeout( () =>
+         { 
+            axios.get(`http://52.79.57.173/rest/moimlistView?page=` + this.state.page)
+            .then(res => {
+              
+                console.log(res)
+                this.setState({
+                    moims:this.state.moims.concat(res.data.moimList.content),
+                    page:this.state.page + 1,
+                   
+                })
+
+                if(this.state.pageTotal == null){
+                    this.setState({pageTotal: res.data.moimList.totalPages})
+                }
+                this.setState({loading: false });
+                this.setState({ spinner: false });
+            })
+           
+         }, 1000)
     }
+    
     componentDidMount(){
+        // alert("comp did mnt")
         this._getData();
         
     }
@@ -56,6 +77,11 @@ class Data1 extends Component{
         
         return(
             <View style={styles.container}>
+                <Spinner 
+                visible={this.state.spinner}
+                textContent={'Loading...'}
+ 
+                ></Spinner>
                 <View style={styles.elem}>
                     <View style={styles.userInfo}>
                         <FlatList
@@ -103,7 +129,7 @@ class Data1 extends Component{
                             keyExtractor={(item, index) => item.id}
                             onEndReached={this._handleLoadMore}
                             onEndReachedThreshold={1}
-                            
+                           
                         />    
                       
                               
