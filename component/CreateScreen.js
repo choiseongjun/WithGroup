@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import {View, Text, TextInput, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FooterButton from './FooterButton';
-
+import axios from 'axios';
 
 const BLUE = '#428AF8';
 const LIGHT_GRAY = '#D3D3D3';
 
-class CreateScreen extends Component{
+class CreateScreen extends Component {
     constructor(props){
         super(props);
         console.log("LoginScreen constroctor - ");
@@ -24,6 +24,41 @@ class CreateScreen extends Component{
     handleFocus = event => {
         this.setState({ isFocused: true});
     };
+
+    signup = (id, pw, nick) => {
+        console.log("email:"+id+", password:"+pw+", nickname:"+nick);
+        alert("email:"+id+", password:"+pw+", nickname:"+nick);
+        
+        let people = {};
+        people.id=id;
+        people.pw=pw;
+        people.nick=nick;
+
+        let formData = new FormData();
+        formData.append('signUpRequest', new Blob([JSON.stringify(people)], {
+            type: "application/json;"
+        }));
+       
+            axios.post(`http://52.79.57.173/signup`, {formData},{
+                headers:{
+                    type:'POST',
+                    enctype: 'multipart/form-data',
+                        processData: false, //데이터를 쿼리 문자열로 변환하는 jQuery 형식 방지
+                        contentType: false,
+                        dataType:'json',
+                    mimeType:"multipart/form-data",
+                    data: formData,
+                  }
+              }) 
+            .then( res => {  
+                console.log(res);
+                console.log(res.data);     
+                {this.props.navigation.navigate('HOME')}  
+            })
+            .catch( error => { 
+                console.log('failed', error) 
+            })
+    }
 
     render(){
         const {isFocused} = this.state;
@@ -47,9 +82,9 @@ class CreateScreen extends Component{
                             isFocused? BLUE : LIGHT_GRAY
                         }
                         onFocus={this.handleFocus}
-                        
-                        />
+                    />
                 </View>
+
                 <View style={styles.signupText}>
                     <Feather name='lock' size={30}/>
                     <TextInput 
@@ -62,9 +97,9 @@ class CreateScreen extends Component{
                             isFocused? BLUE : LIGHT_GRAY
                         }
                         onFocus={this.handleFocus}
-
-                        />
+                    />
                 </View>
+
                 <View style={styles.signupText}>
                     <Feather name='lock' size={30}/>
                     <TextInput 
@@ -77,14 +112,14 @@ class CreateScreen extends Component{
                             isFocused? BLUE : LIGHT_GRAY
                         }
                         onFocus={this.handleFocus}
-
-                        />
+                    />
                 </View>
+
                 <View style={styles.signupText}>
                     <Feather name='nickname' size={30}/>
                     <TextInput 
                         style={styles.inputText}
-                        onChangeText={(pw) => this.setState({pw})}
+                        onChangeText={(nick) => this.setState({nick})}
                         autoCorrect={false}
                         placeholder="닉네임"
                         secureTextEntry={true}
@@ -92,13 +127,20 @@ class CreateScreen extends Component{
                             isFocused? BLUE : LIGHT_GRAY
                         }
                         onFocus={this.handleFocus}
-                        />
+                    />
                 </View>
 
                 <FooterButton 
                     buttonText='Sign Up'
                     style={styles.signupButton}
-                    onPress={() => this.props.navigation.navigate('HOME')}/>
+                    onPress={() => 
+                        this.signup(
+                            this.state.id,
+                            this.state.pw,
+                            this.state.nick
+                        )
+                    }
+                />
 
                 <TouchableOpacity 
                     onPress={() => this.props.navigation.navigate('HOME')}>
