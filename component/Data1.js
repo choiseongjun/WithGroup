@@ -10,98 +10,101 @@ class Data1 extends Component{
         super(props)
         this.state ={
             moims:[],
-            names:[]
-            
+            names:[],
+            data:[],
+            page:1,
+            pageTotal:4
           
         }
     }
-
-    componentDidMount(){
-  
-        axios.get(`http://52.79.57.173/rest/moimlistView`)
-        .then(res => {
-          const moims = res.data.moimList.content;
-          this.setState({ moims });
-          console.log('모임', moims)
-        
-        
-        //   테스트
-        //   console.log('사람', moims[0].peopleList[1].name)
-        //   console.log('몇명?', moims[0].peopleList.length)
-          
-        //   const i = 0;
-        //   const peopleNum =[]
-          
-        //   while(i<moims[0].peopleList.length){
-        //       peopleNum.push( moims[0].peopleList[i].name);
-        //       i+=1;
-        //   }
-        // for(i;i<4;i++){
-        //     peopleNum.push( moims[0].peopleList[i].name);
-        //     console.log('참여사람들1', peopleNum)
-
+    
+      _handleLoadMore = () => {
+        // if(this.state.page == this.state.pageTotal ){
+        //     alert("마지막페이지입니다")
         // }
-        //   console.log('참여사람들2', peopleNum)
-        // })
-    //    moims[0].peopleList.map(moim => (
-    //        {moim.name}
-    //    ))
-        
-            
-        }
-        )}
+        // else{
+            this._getData();
+        // }
+      }
 
-     
- 
+    _getData = async () =>{
+        // alert("getData ")
+
+        axios.get(`http://52.79.57.173/rest/moimlistView?page=` + this.state.page)
+        .then(res => {
+        //   const moims = res.data.moimList.content;
+            this.setState({
+                moims:this.state.moims.concat(res.data.moimList.content),
+                page:this.state.page + 1
+            })
+            
+            console.log("this.state.moims.length : " + this.state.moims.length)
+            console.log("this.state.page : " + this.state.page);
+            console.log("res.data : ",  res.data);
+            console.log("res.data.moimList : ", res.data.moimList)
+        })
+    }
+    componentDidMount(){
+        this._getData();
+        
+    }
+
     render(){
 
         const {moims} = this.state;
         const logo = require('../image/ddd.jpg');
-   
+        
         return(
             <View style={styles.container}>
                 <View style={styles.elem}>
                     <View style={styles.userInfo}>
                         <FlatList
+                            // data={this.state.data}
                             data={moims}
                             renderItem={({item}) =>  
-                            <TouchableOpacity 
-                            onPress={() => this.props.children.navigation.navigate('MoimDetail',{id: item.id} )}
-                            style={styles.section}>
-                                <View style={{flexDirection:'row',flex:1}}>
-                                <Image 
-                                    source={item.imageName === null ? require('../image/ddd.jpg')  : {uri:'http://52.79.57.173/getMoimImage/'+item.imageName+'.'+item.imageExtension}} 
-                                    style={{width: 100, height: 75}} 
-                                    /> 
-                                    <View style={styles.textMoim}>
-                                        <Text style={{fontSize:15, fontWeight:'bold',marginTop:1}}>
-                                            {item.title}
-                                        </Text> 
-                                        <Text>
-                                            {item.intro}
-                                        </Text>
-                                        <Text>
-                                            {item.people.name}
-                                        </Text>
-                            
+                                <TouchableOpacity 
+                                onPress={() => this.props.children.navigation.navigate('MoimDetail',{id: item.id} )}
+                                style={styles.section}>
+                                    <View style={{flexDirection:'row',flex:1}}>
+                                    <Image 
+                                        source={item.imageName === null ? require('../image/ddd.jpg')  : {uri:'http://52.79.57.173/getMoimImage/'+item.imageName+'.'+item.imageExtension}} 
+                                        style={{width: 100, height: 75}} 
+                                        /> 
+                                        <View style={styles.textMoim}>
+                                            <Text style={{fontSize:15, fontWeight:'bold',marginTop:1}}>
+                                                {item.title}
+                                            </Text> 
+                                            <Text>
+                                                {item.intro}
+                                            </Text>
+                                            <Text>
+                                                {item.people.name}
+                                            </Text>
+                                
+                                        </View>
                                     </View>
-                                </View>
-                                 
-                                    <TouchableOpacity
-                                        onPressOut={() => 
-                                            // {console.log('모달',item.peopleList.map(x=>x.name))}
-                                            // <View style={styles.modar}>
-                                            //    <Text>{item.peopleList.map(x=>x.name)}</Text> 
-                                            // </View>
-                                            Alert.alert(
-                                                'Parties',
-                                                String(item.peopleList.map(x=>x.name))
-                                            )
-                                            }>
-                                            <Text style={styles.peopleNum}>{item.peopleList.length}</Text>
-                                    </TouchableOpacity>
-                             
-                            </TouchableOpacity> }/>    
+                                    
+                                        <TouchableOpacity
+                                            onPressOut={() => 
+                                                // {console.log('모달',item.peopleList.map(x=>x.name))}
+                                                // <View style={styles.modar}>
+                                                //    <Text>{item.peopleList.map(x=>x.name)}</Text> 
+                                                // </View>
+                                                Alert.alert(
+                                                    'Parties',
+                                                    String(item.peopleList.map(x=>x.name))
+                                                )
+                                                }>
+                                                <Text style={styles.peopleNum}>{item.peopleList.length}</Text>
+                                        </TouchableOpacity>
+                                
+                                </TouchableOpacity> 
+                            }
+                            keyExtractor={(item, index) => item.id}
+                            onEndReached={this._handleLoadMore}
+                            onEndReachedThreshold={1}
+                            
+                        />    
                       
                               
                     </View>

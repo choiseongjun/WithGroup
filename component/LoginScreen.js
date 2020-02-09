@@ -11,7 +11,6 @@ import axios from 'axios';
 import {AsyncStorage} from 'react-native';
 
 
-
 const BLUE = '#428AF8';
 const LIGHT_GRAY = '#D3D3D3';
 
@@ -31,9 +30,8 @@ class LoginScreen extends Component{
         this.setState({ password: text })
      }
      login = (email, password) => {
-        //alert('email: ' + email + ' password: ' + password)
+        alert('email: ' + email + ' password: ' + password)
         
-
         axios.post(`http://52.79.57.173/signin`,{email:email,
         password:password})
         .then(res => {
@@ -43,7 +41,6 @@ class LoginScreen extends Component{
 
             {this.props.navigation.navigate('Main')}
         })
-
    }
        
 
@@ -155,5 +152,4 @@ const styles = StyleSheet.create({
     },
   
 })
-
 export default LoginScreen;
