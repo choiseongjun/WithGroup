@@ -58,6 +58,11 @@ class PlanList extends Component {
         item.checkClicked = !item.checkClicked; //checkclicked bool설정
         console.log('item', item)
         console.log('item.checkCliked',item.checkClicked)
+        if(item.checkClicked === true){
+            item.checkConfirm = 'Y'
+        }else if(item.checkClicked === false){
+            item.checkConfirm ='N'
+        }
         // console.log(this.state.planData[0].checkClicked)
         // console.log(this.state.planData[1].checkClicked)
 
