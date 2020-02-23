@@ -37,13 +37,13 @@ class CreatePlanModal extends Component{
         return(
             <Modal
                 animationType={'slide'}
-                transparent={false}
+                transparent={true}
                 visible={this.state.isvisible}
                 onRequestClose= {() => {console.log("Modal has been closed.")}}>
 
                 <View style={styles.container}>
                     <View style={{flexDirection:'row',alignItems:'center'}}>
-                        <Text style={{fontSize:20}}>계획: </Text>
+                        <Text style={{fontSize:20,color:'white'}}>계획: </Text>
                         <TextInput 
                             style={styles.input}
                             placeholder = {"Plan here"}
@@ -64,7 +64,7 @@ class CreatePlanModal extends Component{
                         placeholder={"Specific Plan"}
                     />
                     <View style={{flexDirection:'row', alignItems:'center',paddingTop:10}}>
-                        <Text>시작일: </Text>
+                        <Text style={{color:'white'}}>시작일: </Text>
                         <DatePicker 
                             style={{width: 130}}
                             date={this.state.startDate}
@@ -83,13 +83,14 @@ class CreatePlanModal extends Component{
                                 marginLeft: 0
                             },
                             dateInput: {
-                                marginLeft: 36
+                                marginLeft: 36,
+                                backgroundColor:'white'
                             }
                             // ... You can check the source to find the other keys.
                             }}
                             onDateChange={(date) => {this.setState({startDate: date})}}
                         />
-                        <Text style={{marginLeft:5}}>종료일: </Text>
+                        <Text style={{marginLeft:5,color:'white'}}>종료일: </Text>
                         <DatePicker 
                             style={{width: 130}}
                             date={this.state.endDate}
@@ -108,7 +109,8 @@ class CreatePlanModal extends Component{
                                 marginLeft: 0
                             },
                             dateInput: {
-                                marginLeft: 36
+                                marginLeft: 36,
+                                backgroundColor:'white'
                             }
                             // ... You can check the source to find the other keys.
                             }}
@@ -119,11 +121,17 @@ class CreatePlanModal extends Component{
                     <TouchableOpacity
                     style={{justifyContent:'center'}}
                     onPress={this._getPlanData}
-                    onPressOut={() => this.setState({isvisible:false})}
+                    //onPressOut={() => this.setState({isvisible:false})}
                         >
                         <View style={styles.square}><Text style={{fontSize:30,color:'white'}}>+</Text></View>
                     </TouchableOpacity>
-            
+                    <TouchableOpacity
+                    style={{justifyContent:'center'}}
+                    onPress={() => this.setState({isvisible:false})}
+                    onPressOut={this.props.vData(this.state.isvisible)}
+                        >
+                        <View style={styles.exit}><Text style={{fontSize:20,color:'white',fontWeight:'bold'}}>X 닫기</Text></View>
+                    </TouchableOpacity>
                 </View>
 
             </Modal>
@@ -135,22 +143,28 @@ class CreatePlanModal extends Component{
 
 const styles = StyleSheet.create({
     container:{
-        flex:1,
-        alignItems:'center'
+        //flex:1,
+        alignItems:'center',
+        height:"78%",
+        backgroundColor : "rgba(0,0,0,0.7)"
+
     },
     input:{
         margin:10,
         borderBottomColor: "#bbb",
         borderBottomWidth: 1,
         fontSize: 15,
-        width:"80%"
+        width:"80%",
+        color:'white'
     },
     inputText:{
         //marginLeft:10,
         width:width-20,
         height:"50%",
         borderWidth:1,
-        borderColor:'#bbb'
+        borderColor:'#bbb',
+        color:'white'
+        
     },
     square:{
         width:width-20,
@@ -161,6 +175,11 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         marginTop:10
     },
+    exit:{
+        paddingTop:20,
+        borderBottomWidth:0.2,
+        borderColor:'white'
+    }
 })
 
 export default CreatePlanModal;
