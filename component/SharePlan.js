@@ -1,34 +1,68 @@
 import React,{Component} from 'react';
-import {View,Button,Text,StyleSheet,Dimensions,Modal,ScrollView,FlatList, TouchableOpacity} from 'react-native';
+import {View,Button,Text,StyleSheet,Dimensions,Modal,ScrollView,FlatList, TouchableOpacity,} from 'react-native';
 import * as Progress from 'react-native-progress';
-import DatePick from './DatePick';
 import PlanList from './PlanList';
-import SeeButtonModal from './SeeButtonModal';
+import CreatePlanModal from './CreatePlanModal';
 import { symbol } from 'prop-types';
+import Axios from 'axios';
 
 const{width, height} = Dimensions.get('window');
-export default class SharePlan extends Component{
-    state={
-        data:[
-            {id:1, plan:'noname', planlist:{id:1, planName:'년간 계획세우기'}, percent:0.7,name:'Kyeongti',status:'new'},
-            {id:2, plan:'noname', percent:0.3,name:'CY',status:'new'},
-            {id:3, plan:'noname', percent:0.5,name:'Jun',status:'new'},
-            {id:4, plan:'noname', percent:0.8,names:'Junghu',status:'new'},
-            {id:5, plan:'noname', percent:0.2,names:'Mingu',status:'new'},
-            {id:6, plan:'noname', percent:0.9,names:'Ruru',status:'new'},
 
-        ],
-        isClicked:true,
-        isVisible:false,
-        startDate:'',
-        //endDate:'',
-        isEditing:false,
-        expendDate:0,
-        isSaving:false,
-        formDate:'',
-        seeClicked:false
+export default class SharePlan extends Component{
+    constructor(props){
+        super(props)
+        this.state= {
+            data:[
+                {id:1, plan:'noname', planlist:{id:1, planName:'년간 계획세우기'}, percent:0.7,name:'Kyeongti',status:'new'},
+                {id:2, plan:'noname', percent:0.3,name:'CY',status:'new'},
+                {id:3, plan:'noname', percent:0.5,name:'Jun',status:'new'},
+                {id:4, plan:'noname', percent:0.8,names:'Junghu',status:'new'},
+                {id:5, plan:'noname', percent:0.2,names:'Mingu',status:'new'},
+                {id:6, plan:'noname', percent:0.9,names:'Ruru',status:'new'},
+    
+            ],
+            isClicked:true,
+            isVisible:false,
+            startDate:'',
+            //endDate:'',
+            isEditing:false,
+            expendDate:0,
+            isSaving:false,
+            formDate:'',
+            
+            MoimId: this.props.MoimId,
+            planList:[],
+            isVisibleCPM:false
+            
+        }
        
     }
+   
+    componentWillMount(){
+        const MoimId = this.state.MoimId;
+        console.log('모임아이디',MoimId)
+        Axios.get(`http://52.79.57.173/rest/moimDetail/moimTodoList/${MoimId}`)
+        .then(res => {
+            console.log('shareplan res', res)
+            const List = res.data.todolist.content;
+            this.setState({
+                planList: List
+            })
+      
+            console.log('planList', this.state.planList)
+          
+        })
+      
+    }
+    // componentDidUpdate(){
+    //     if(this.state.isVisibleCPM === true){
+    //          setTimeout(() => {
+    //                 this.setState({isVisibleCPM:false})
+    //               }, 1);
+            
+    //     }
+    //     console.log('isvisibleCPM did mount', this.state.isVisibleCPM)
+    // }
     _clicked(){
         this.setState({
             isClicked: !this.state.isClicked
@@ -59,15 +93,21 @@ export default class SharePlan extends Component{
             seeClicked:false
         })
     }
-    // _lastDate = (formDate) => this.setState({endDate:formDate})
 
     //planList에서 보기 클릭했을때 동작
-    _seeClicked(){
-        this.setState({seeClicked: true})
+    // _seeClicked(){
+    //     this.setState({seeClicked: true})
+    // }
+
+    _passId = (item) =>{
+        this.setState({isVisible:true})
+        const id = item.id
+        console.log('item.id',id)
+        this.setState({
+            planListId: id
+        })
     }
-    _closeSeeClicked(){
-        this.setState({seeClicked: !this.state.seeClicked})
-    }
+
 
     render(){
         return(
@@ -77,162 +117,132 @@ export default class SharePlan extends Component{
                   <Text style={{paddingLeft:80,fontWeight:'bold'}}>계획</Text>
                   <Text style={{paddingLeft:90,fontWeight:'bold'}}>작성자</Text>
                   <Text style={{paddingLeft:75,fontWeight:'bold'}}>진행도</Text>
-                </View>  
-                                    {/* 임시  데이터 나중에 데이터 받아서 flatList로 처리할 예정 */}
-                                    <View style={styles.userBox}>
-                                        <View style={[styles.planList,{paddingLeft:8}]}><Text>{this.state.data[0].status}</Text></View>
-                                        <TouchableOpacity
-                                            style={styles.planList}
-                                            onPress={() => this.setState({isVisible: true})}
-                                            >
-                                          <View style={{flex:1,justifyContent:'center'}}>
-                                            <Text>{this.state.data[0].plan}</Text>
-                                            {this.state.isSaving ? (<Text>{this.state.formDate}</Text>) : (console.log('nothing'))}
-                                          </View>
-                                                                      
-                                        </TouchableOpacity>
-                                        <View style={styles.planList}><Text>{this.state.data[0].name}</Text></View>
-                                        <View style={styles.planList}>
-                                            <Progress.Bar progress={this.state.data[0].percent} width={70} height={20} />
-                                        </View>
-
-                                        <Modal
-                                            animationType={'fade'}
-                                            transparent={true}
-                                            visible={this.state.isVisible}
-                                            onRequestClose= {() => {console.log("Modal has been closed.")}}
-                                        >
-                                            <View style={styles.modal}>
-                                                {/* endDate불러오기 */}
-                                               
-                                                {/* 계획리스트 데이터 */}
-                                                <PlanList seeClicked={this._seeClicked.bind(this)}/>
-                                                
-                                                <SeeButtonModal openModal={this.state.seeClicked} closeModal={this._closeSeeClicked.bind(this)}/>
-
-                                                <DatePick onDate={(formDate)=> {
-                                                     console.log('formdate',formDate)
-                                                     this.state.formDate = formDate
-                                                        }}/>
-                                               
-                                               
-                                                <View style={{flexDirection:'row',paddingTop:2, paddingLeft:30, alignSelf:'flex-end'}}>
-                                                     {this.state.isEditing? (
-                                                        <View style={{flexDirection:'row',paddingRight:50,alignItems:'center'}}>
-                                                            <Text>수정종료일자: {this.state.expendDate}  </Text> 
-                                                            <TouchableOpacity
-                                                                onPress={this._expendDate.bind(this)}>
-                                                                <View style={styles.expendCircle}>
-                                                                    <Text>+</Text>
-                                                                </View>
-                                                            </TouchableOpacity>
-                                                        </View>
-                                                        ): (
-                                                        
-                                                            console.log('ss',)
-                                                        //  console.log('끝나는날', this.props.endDate)
-                                                        ) }
-                                                        {this.state.isSaving? (
-                                                            <View style={{paddingRight:50, alignItems:'center'}}>
-                                                                <Text>{this.state.formDate} + {this.state.expendDate}</Text>
-                                                            </View>
-                                                            
-                                                        ):(
-                                                            <Text></Text>
-                                                     )}
-                                                    <View style={styles.editButton}>
-                                                        <Button 
-                                                            title="    수정    "
-                                                            onPress={this._isEditing.bind(this)} 
-                                                            color="#778899"
-                                                            />
-                                                    </View>
-                                                    <View style={styles.editButton}>
-                                                        <Button 
-                                                            title="    저장    "
-                                                            onPress={this._isSaving.bind(this)}
-                                                            color="#778899"
-                                                            />
-                                                    </View>
-                                                    <View style={styles.editButton}>
-                                                        <Button 
-                                                            title="    삭제    "
-                                                            color="#778899"
-                                                            />
-                                                    </View>
+                  
+               </View>
                 
-                                                </View>
-                                                
-                                                 
-                                                <Button 
-                                                    title='   닫기   '
-                                                    onPress = {() => {  
-                                                        this.setState({ isVisible:!this.state.isVisible})}}
-                                                    color={'gray'}
-                                                />
-                                            </View>
-                                            
-                                        </Modal>
-                                    </View>
-                                       
-                                      
+                {/* {console.log(this.state.planList)} */}
+                <View style={{flex:1,alignSelf:'flex-start'}}>
 
-
-                <View style={{flex:1}}>
-                
-                        <FlatList 
-                            data={this.props.datas}
-                            renderItem={({item}) => 
-                    
+                      <FlatList 
+                            data={this.state.planList}
+                            renderItem={({item}) =>
                                 <View style={styles.userBox}>
-                                      
-                                        <TouchableOpacity 
-                                            style={{justifyContent:'center'}}
-                                            onPress={this._clicked.bind(this)}>
-                                        <View style={[styles.circle, this.state.isClicked ? styles.completedCircle : styles.uncompletedCircle]}></View>
-                                        </TouchableOpacity>
-                                        <View style={{flex:1,justifyContent:'center'}}><Text>{item.name}</Text></View>
-
-                                        <Modal
-                                            animationType={'fade'}
-                                            transparent={true}
-                                            visible={this.state.isVisible}
-                                            onRequestClose= {() => {console.log("Modal has been closed.")}}
-                                        >
-                                            <View style={styles.modal}>
-                                                
-                                                <Button 
-                                                    title='   닫기   '
-                                                    onPress = {() => {  
-                                                        this.setState({ isVisible:!this.state.isVisible})}}
-                                                    color={'gray'}
-                                                />
-                                            </View>
-                                            
-                                        </Modal>
-
-                                        {/* 임시로 no title으로 설정 나중에 데이터 채울꺼임*/}
-                                        <TouchableOpacity
-                                            style={{flex:1}}
-                                            onPress={() => this.setState({isVisible: true})}
-                                            >
-                                          <View style={{flex:1,justifyContent:'center'}}><Text>no title</Text></View>                                    
-                                        </TouchableOpacity>
-                                        <View style={{flex:1, justifyContent:'center'}}>
-                                            {/* 임시로 랜덤 이부분도 나중에 데이터 채울꺼임 */}
-                                            <Progress.Bar progress={Math.random(Math.floor)} width={70} height={20} /> 
-                                        </View>     
+                                    <View style={[styles.planList,{paddingLeft:8}]}><Text>{item.status}</Text></View>
+                                    <TouchableOpacity
+                                                    style={styles.planList}
+                                                    onPress={() => this._passId(item)}
+                                                    >
+                                                <View style={{flex:1,justifyContent:'center'}}>
+                                                    <Text>{item.plan_title}</Text>
+                                                    {this.state.isSaving ? (<Text>{this.state.formDate}</Text>) : (console.log('nothing'))}
+                                                </View>
+                                    </TouchableOpacity>
+                                    <View style={styles.planList}><Text>{item.people.name}</Text></View>
+                                        <View style={styles.planList}>
+                                            <Progress.Bar progress={item.progress * 0.01} width={70} height={20} />
+                                        </View>                
+                                </View> 
+                                
+                            }/>
+                        
+                      <Modal
+                      animationType={'fade'}
+                      transparent={true}
+                      visible={this.state.isVisible}
+                      onRequestClose= {() => {console.log("Modal has been closed.")}}
+                       >
+                          <View style={styles.modal}>
+                            
+                              {/* 계획리스트 데이터 */}
+                              <PlanList todoList={this.state.planListId}/>
                               
-                                </View>
-                       
-                      
-                               
-                            }
-                        />
-                    
-                </View>
-                
 
+                              <View style={{flexDirection:'row',paddingTop:2, paddingLeft:30, alignSelf:'flex-end'}}>
+                                  {this.state.isEditing? (
+                                      <View style={{flexDirection:'row',paddingRight:50,alignItems:'center'}}>
+                                          <Text>수정종료일자: {this.state.expendDate}  </Text> 
+                                          <TouchableOpacity
+                                              onPress={this._expendDate.bind(this)}>
+                                              <View style={styles.expendCircle}>
+                                                  <Text>+</Text>
+                                              </View>
+                                          </TouchableOpacity>
+                                      </View>
+                                      ): (
+                                      
+                                          console.log('ss',)
+                                      //  console.log('끝나는날', this.props.endDate)
+                                      ) }
+                                      {this.state.isSaving? (
+                                          <View style={{paddingRight:50, alignItems:'center'}}>
+                                              <Text>{this.state.formDate} + {this.state.expendDate}</Text>
+                                          </View>
+
+                                      ):(
+                                          <Text></Text>
+                                  )}
+                                  <View style={styles.editButton}>
+                                      <Button 
+                                          title="    수정    "
+                                          onPress={this._isEditing.bind(this)} 
+                                          color="#778899"
+                                          />
+                                  </View>
+                                  <View style={styles.editButton}>
+                                      <Button 
+                                          title="    저장    "
+                                          onPress={this._isSaving.bind(this)}
+                                          color="#778899"
+                                          />
+                                  </View>
+                                  <View style={styles.editButton}>
+                                      <Button 
+                                          title="    삭제    "
+                                          color="#778899"
+                                          />
+                                  </View>
+
+                              </View>
+                                      
+                                      
+                              <Button 
+                                  title='   닫기   '
+                                  onPress = {() => {  
+                                      this.setState({ isVisible:!this.state.isVisible})}}
+                                  color={'gray'}
+                              />
+                           </View>
+                                  
+                      </Modal>                            
+             
+                      
+                         
+                        
+                </View>
+                <View style={styles.createSection}>
+                     <TouchableOpacity 
+                        //  onPress={() => this.props.passNavi.navigate('CreatePlan')}
+                        onPress={() => this.setState({isVisibleCPM: true})}
+                         style={styles.createButton}>
+                         <View style={styles.create}>
+                             <Text style={styles.createText}>추가 +</Text>
+                         </View>  
+                     </TouchableOpacity>
+                 </View>
+
+                 {this.state.isVisibleCPM ? (
+                        <CreatePlanModal visible={this.state.isVisibleCPM}/>
+                          ):(
+                        console.log('CreatePlanModal')
+                        )}   
+                {console.log('isvisibleCPM', this.state.isVisibleCPM)}
+                {/* 테스트입니다.시작. 기존에 있는isVisible로 bool지정 */}
+                {/* <Button 
+                    title="  TypeInput Modal  "
+                    onPress={() => this.setState({isVisible:true})}
+                /> */}
+
+                {/* 테스트입니다.끝 */}
             </View>
         );
     } 
@@ -277,7 +287,7 @@ const styles = StyleSheet.create({
     modal:{
         justifyContent: 'center',  
        // alignItems: 'center',  
-        backgroundColor : "rgba(0,0,0,0.2)",   
+        backgroundColor : "rgba(0,0,0,0.7)",   
         height: "50%" ,  
         // width: width-0,  
         borderRadius:10,  
@@ -303,5 +313,31 @@ const styles = StyleSheet.create({
     editButton:{
         padding:3,
         paddingBottom:10
-    }
+    },
+    create:{
+        width:70,
+        height:70,
+        borderRadius:35,
+        backgroundColor:'#006400',
+        alignItems:'center',
+        justifyContent:'center',
+        borderColor:'#8FBC8F',
+        borderWidth:2
+    },
+    createText:{
+        fontSize:18,
+        color:'#F8F8FF'
+    },
+    createButton:{
+        marginBottom:30,
+        marginRight:20,
+        marginTop:15,
+        
+    },
+    createSection:{
+       // flex:1,
+        alignItems:'flex-end',
+        flexDirection:'column-reverse',
+        marginTop:-10
+    },
 })
