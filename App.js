@@ -7,6 +7,7 @@ import FindPasswordScreen from './component/FindPasswordScreen';
 import CreateScreen from './component/CreateScreen';
 import MoimDetail from './component/MoimDetail';
 import CreateStudy from './component/CreateStudy';
+import CreatePlan from './component/CreatePlan';
 
 import {TimeLinesScreen} from './timelines';
 import {AppInfomation} from './Infomation';
@@ -57,7 +58,14 @@ const AppNavigator = createStackNavigator({
     navigationOptions:{
       headerShown: false
     }
-  }
+  },
+  CreatePlan: {
+    screen:CreatePlan,
+    // navigationOptions:{
+    //   headerShown: false,
+    // }
+  },
+
 });
 
 export default createAppContainer(AppNavigator);

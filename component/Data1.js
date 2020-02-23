@@ -64,6 +64,15 @@ class Data1 extends Component{
          }, 1000)
     }
     
+    // componentWillMount(){
+    //          axios.get(`http://52.79.57.173/rest/moimlistView?page=` + this.state.page)
+    //         .then(res => {
+              
+    //             console.log(res)
+                
+    //         })
+    // }
+
     componentDidMount(){
         // alert("comp did mnt")
         this._getData();

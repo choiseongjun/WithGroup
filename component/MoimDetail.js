@@ -18,6 +18,7 @@ class MoimDetail extends Component{
             moimDetail:[],
             moimPeople:[],
             DataId:this.props.navigation.state.params.id,
+            passSharePlanNavi:this.props.navigation,
             isVisible: false,
             isClicked:false,
             moimLeader:[],
@@ -46,7 +47,7 @@ class MoimDetail extends Component{
         }
      _controlScreen(){
         if(this.state.type === '계획공유'){
-            return <SharePlan datas={this.state.moimPeople}/>
+            return <SharePlan datas={this.state.moimPeople} MoimId={this.state.DataId} passNavi={this.state.passSharePlanNavi}/>
         }
     } 
    
@@ -98,7 +99,7 @@ class MoimDetail extends Component{
             console.log("token in MoimDetail: ", token);
         
             this.setState({accessToken : value})
-            axios.get(`http://52.79.57.173:8080/rest/moimlistView/moimdetailView/${Data}`, 
+            axios.get(`http://52.79.57.173/rest/moimlistView/moimdetailView/${Data}`, 
             { headers: {"Authorization" : token }  } )
             .then(res => {  
                 console.log("res in Moimdetail : ", res)
