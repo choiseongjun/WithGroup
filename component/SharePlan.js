@@ -231,14 +231,18 @@ export default class SharePlan extends Component{
                  </View>
 
                  {this.state.isVisibleCPM ? (
-                        <CreatePlanModal visible={this.state.isVisibleCPM} vData={(vData) => {
-                            //console.log('vData', vData)
-                            if(vData === false){
-                                this.setState({
-                                    isVisibleCPM:false
-                                })
-                            }
-                        }}/>
+                        <CreatePlanModal 
+                            visible={this.state.isVisibleCPM} 
+                            vData={(vData) => {
+                                //console.log('vData', vData)
+                                if(vData === false){
+                                    this.setState({
+                                        isVisibleCPM:false
+                                    })
+                                  }
+                                 }}
+                            MoimId={this.state.MoimId}
+                            />
                           ):(
                         console.log('CreatePlanModal')
                         )}   
