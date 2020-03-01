@@ -130,7 +130,7 @@ class Data1 extends Component{
                                                     String(item.peopleList.map(x=>x.name))
                                                 )
                                                 }>
-                                                <Text style={styles.peopleNum}>{item.peopleList.length}</Text>
+                                                {/* <Text style={styles.peopleNum}>{item.peopleList.length}</Text> */}
                                         </TouchableOpacity>
                                 
                                 </TouchableOpacity> 
