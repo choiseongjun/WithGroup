@@ -20,6 +20,7 @@ class PlanList extends Component {
         todoDateStart: '',
         todoDateEnd:'',
         // passPlanData:[],
+        checkedId:[]
     }
   
     
@@ -39,8 +40,9 @@ class PlanList extends Component {
             })
             console.log('this.state.todolist', this.state.todoList)
             // console.log('this.state.todoDate', this.state.todoDate)
-
+            this.props.checkData(this.state.todoList);
         })
+        
     }
 
     _clicked = (item) =>{
@@ -62,10 +64,11 @@ class PlanList extends Component {
             item.checkConfirm = 'Y'
         }else if(item.checkClicked === false){
             item.checkConfirm ='N'
+            
         }
-        // console.log(this.state.planData[0].checkClicked)
-        // console.log(this.state.planData[1].checkClicked)
-
+        this.props.checkData(this.state.todoList);
+ 
+        console.log('this.state.checkedId', this.state.checkedId)
     }
     _checkAction = (item) => {
         if(item.checkConfirm === 'N'){
@@ -105,10 +108,11 @@ class PlanList extends Component {
                         {/* <Text style={this.state.clicked ? (item.checkClicked? (styles.completedPlanText) : (styles.planText)) : (styles.planText)}> */}
                         <Text style={this._checkAction(item)}>  
                             ▶   {item.plan_list},  {item.checkConfirm}
+                            
                         </Text>
                         <View style={styles.Button}><Button title="체크" color="#F08080" onPress={() =>this._clicked(item)}/></View>
                         <View style={styles.Button}><Button title="보기" color="#ADD8E6" onPress={() => this._seeClicked(item)}/></View>
-                        
+                       
                     </View>
                     
                 )}

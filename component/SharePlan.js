@@ -32,7 +32,8 @@ export default class SharePlan extends Component{
             
             MoimId: this.props.MoimId,
             planList:[],
-            isVisibleCPM:false
+            isVisibleCPM:false,
+            checked:[]
             
         }
        
@@ -92,7 +93,47 @@ export default class SharePlan extends Component{
             isEditing:false,//수정 날짜 초기화
             seeClicked:false
         })
+        console.log('checed data', this.state.checked)
+        const count = this.state.checked.map((a) => a)
+       
+        var checked = 0;
+        const listId = [];
+        for(var i = 0;i<count.length;i++){
+            if(count[i].checkConfirm === 'Y'){
+                checked ++;
+            }
+            if(count[i].checkClicked === true){
+                listId.push(count[i].id)
+            }
+        }
+        console.log('listId', listId.join())
+        // for(var i = 0 ;i<count.length;i++){
+        //     if(count[i].checkClicked === true){
+        //         listId.push(count[i].id)
+        //     }
+        // }
+        console.log('listId', listId)
+        console.log('check', checked);
+        console.log('count.checkClicked',count)
+        const no = this.state.MoimId;
+        console.log('no',no)
+        let param={
+			list:listId.join(),
+			count:checked
+	    }
+       
+            
+        Axios.post(`http://172.30.1.5:8080/moimDetail/moimTodoList/moimtodostatus/moimtodostatusDetail/${no}`, param) 
+        .then(res => {
+            console.log("res in")
+            console.log("res.data : ", res.data)
+            
+        })
+   
+
+        
     }
+
 
     //planList에서 보기 클릭했을때 동작
     // _seeClicked(){
@@ -154,7 +195,7 @@ export default class SharePlan extends Component{
                           <View style={styles.modal}>
                             
                               {/* 계획리스트 데이터 */}
-                              <PlanList todoList={this.state.planListId}/>
+                              <PlanList todoList={this.state.planListId} checkData={(check) => this.setState({checked:check})}/>
                               
 
                               <View style={{flexDirection:'row',paddingTop:2, paddingLeft:30, alignSelf:'flex-end'}}>

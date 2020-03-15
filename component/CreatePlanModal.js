@@ -47,28 +47,17 @@ class CreatePlanModal extends Component{
         let toDoWriteList={};
         toDoWriteList.toDoWrite=toDoWrite;
         toDoWriteList.plan_list=this.state.addSplan.join();
-        
+    
         AsyncStorage.getItem("access_token").then((value) => {
             token = value
             console.log("token in CreatePlanModal: ", token);
-            // axios.post(`http://172.30.1.39:8080/moimDetail/moimTodoList/moimTodowrite/${no}`,JSON.stringify(toDoWriteList),
-            // { headers: {"Authorization" : token }
-            //    } 
-            // )
-            axios.post(`http://172.30.1.39:8080/moimDetail/moimTodoList/moimTodowrite/${no}`, toDoWriteList,{
+            axios.post(`http://172.30.1.5:8080/moimDetail/moimTodoList/moimTodowrite/${no}`, toDoWriteList,{
                 headers:{
                     type:'POST',
                     dataType:'json',
                     "Authorization" : token
                     }
                 }) 
-            // axios({
-            //     url: `http://172.30.1.39:8080/moimDetail/moimTodoList/moimTodowrite/${no}`,
-            //     method: 'post',
-            //     data: JSON.stringify(toDoWriteList),
-            //     headers: {"Authorization" : token },
-            //     contentType: 'application/json',
-            //   })
             .then(res => {
                 console.log("res in")
                 console.log("res.data : ", res.data)
@@ -84,7 +73,10 @@ class CreatePlanModal extends Component{
         console.log('this.state.addSplan', this.state.addSplan)
         this.setState({planSpecificToDo: ''})
     }
-  
+    _closeModal = () => {
+        this.setState({isvisible: false})
+
+    }
 
     
 
@@ -201,7 +193,7 @@ class CreatePlanModal extends Component{
                     </TouchableOpacity>
                     <TouchableOpacity
                     style={{justifyContent:'center'}}
-                    onPress={() => this.setState({isvisible:false})}
+                    onPress={this._closeModal}
                     onPressOut={this.props.vData(this.state.isvisible)}
                         >
                         <View style={styles.exit}><Text style={{fontSize:20,color:'white',fontWeight:'bold'}}>X 닫기</Text></View>
