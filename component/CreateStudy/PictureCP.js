@@ -31,13 +31,16 @@ export default function PcitureCP(props) {
         // You can also display the image using data:
         // const source = { uri: 'data:image/jpeg;base64,' + response.data };
 
-        setFieldValue(field.name, response.uri);
+        setFieldValue(field.name, response);
       }
     });
   };
   return (
     <React.Fragment>
-      <Image source={{uri: field.value}} style={{width: 100, height: 100}} />
+      <Image
+        source={{uri: field.value.uri}}
+        style={{width: 100, height: 100}}
+      />
       <Button title="new lmage" {...props} onPress={onPress} />
     </React.Fragment>
   );

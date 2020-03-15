@@ -8,7 +8,7 @@ import ButtonGroupCP from './CreateStudy/ButtonGroupCP';
 import PictureCP from './CreateStudy/PictureCP';
 import * as yup from 'yup';
 import {Formik, Field} from 'formik';
-import axios from 'axios';
+import {AsyncStorage} from 'react-native';
 
 const createStudySchema = yup.object().shape({
   name: yup.string().required(), //텍스트
@@ -31,34 +31,81 @@ const studyInitialValues = {
   introduction: '설명',
   mainPicture: '',
 };
+
+const createFormData = (photo, body) => {
+  const data = new FormData();
+
+  data.append('file', {
+    name: photo.fileName,
+    type: photo.type,
+    uri:
+      Platform.OS === 'android' ? photo.uri : photo.uri.replace('file://', ''),
+    data: photo.data,
+  });
+
+  Object.keys(body).forEach(key => {
+    data.append(key, body[key]);
+  });
+
+  return data;
+};
+
 export default class CreateStudy extends React.Component {
   // onClickCreate(values) {
   //   console.log(values);
   // }
-  onClickCreate(values) {
+
+  async onClickCreate(values) {
     let formData = new FormData();
-    
-    console.log(values.mainPicture)
-    formData.append('title', values.name);
-    formData.append('intro', values.introduction);
-    formData.append('file', values.mainPicture);
-    
-    axios({
-      method: 'post',
-      url: 'http://52.79.57.173/rest/moimMake',
-      headers: {'Content-Type': 'multipart/form-data'},
-      data: formData,
-      body: {file: values.mainPicture},
-    })
-      .then(res => {
-        {
-          console.log('pass');
-          this.props.navigation.navigate('Main');
-        }
+
+    // console.log(values.mainPicture.data);
+    // formData.append('title', values.name);
+    // formData.append('intro', values.introduction);
+    // formData.append('file', values.mainPicture.data);
+    //let moim = {title: values.name, intro: values.introduction};
+
+    await AsyncStorage.getItem('access_token')
+      .then(value => {
+        const token = value;
+        // fetch('http://172.30.1.5:8080/rest/moimMake', {
+        fetch('http://172.30.1.5:8080/rest/moimMake', {
+          method: 'POST',
+          headers: {
+            dataType: 'json',
+            Authorization: token,
+          },
+          body: createFormData(values.mainPicture, {
+            title: values.name,
+            intro: values.introduction,
+          }),
+        })
+          .then(response => response.json())
+          .then(response => {
+            console.log('upload succes', response);
+            this.props.navigation.navigate('Main');
+          })
+          .catch(error => {
+            console.log('upload error', error);
+          });
       })
-      .catch(e => {
-        console.log(e.message);
-      });
+      .done();
+
+    // await axios({
+    //   method: 'post',
+    //   mode: 'no-cors',
+    //   url: 'http://172.30.1.5:8080/rest/moimMake',
+    //   headers: {'Content-Type': 'multipart/form-data'},
+    //   data: formData,
+    // })
+    //   .then(res => {
+    //     {
+    //       console.log('pass');
+    //       this.props.navigation.navigate('Main');
+    //     }
+    //   })
+    //   .catch(e => {
+    //     console.log(e.message);
+    //   });
 
     // axios
     //   .post(`http://172.30.1.43:8080/rest/moimMake`, {
