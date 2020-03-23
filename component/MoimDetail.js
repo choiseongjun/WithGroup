@@ -8,7 +8,6 @@ import ButtonGroup from './ButtonGroup';
 import SharePlan from './SharePlan';
 import {AsyncStorage} from 'react-native';
 
-
 const {width, height} = Dimensions.get('window');
  
 class MoimDetail extends Component{
@@ -63,7 +62,7 @@ class MoimDetail extends Component{
         console.log("tokenParan : ", tokenParam)
         
 
-        axios.post(`http://52.79.57.173:8080/rest/moimParticipant/${moimNo}/${this.state.PeopleNo}`)
+        axios.post(`http://52.79.57.173/rest/moimParticipant/${moimNo}/${this.state.PeopleNo}`)
             // { headers: {"Authorization" : tokenParam }  } )
             .then(res => {
                 console.log("res in")
@@ -79,7 +78,7 @@ class MoimDetail extends Component{
     teamOut = (moimPeopleNo) => {
         console.log("teamOut()")
         console.log("moimPeopleNo : ", this.state.moimPeopleNo)
-        axios.delete(`http://52.79.57.173:8080/rest/moimParticipant/deletejoinedPeople/${this.state.moimPeopleNo}`)
+        axios.delete(`http://52.79.57.173/rest/moimParticipant/deletejoinedPeople/${this.state.moimPeopleNo}`)
         .then(res => {
             if(res.data.code == "1"){
                 this.setState({isTeamJoin:false})
