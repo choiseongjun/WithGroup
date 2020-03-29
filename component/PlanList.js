@@ -19,14 +19,13 @@ class PlanList extends Component {
         formDate:'',
         todoDateStart: '',
         todoDateEnd:'',
-        // passPlanData:[],
         checkedId:[]
     }
   
     
     componentWillMount(){
         const todoListId = this.state.todoListId;
-        //console.log('todoListIdaaaaaaaaaa', this.props)
+        console.log('todoListIdaaaaaaaaaa', todoListId)
         Axios.get(`http://52.79.57.173/rest/moimDetail/moimTodoList/detail/${todoListId}`)
         .then(res => {
             console.log('planlist res', res)

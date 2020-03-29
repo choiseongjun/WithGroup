@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {View,Button,Text,StyleSheet,Dimensions,Modal,ScrollView,FlatList, TouchableOpacity,} from 'react-native';
+import {View,Button,Text,StyleSheet,Dimensions,Modal,ScrollView,FlatList, TouchableOpacity,RefreshControl} from 'react-native';
 import * as Progress from 'react-native-progress';
 import PlanList from './PlanList';
 import CreatePlanModal from './CreatePlanModal';
@@ -33,15 +33,18 @@ export default class SharePlan extends Component{
             MoimId: this.props.MoimId,
             planList:[],
             isVisibleCPM:false,
-            checked:[]
+            checked:[],
+            refreshing:false,
+            getRefresh:false
             
         }
-       
+         
     }
    
     componentWillMount(){
         const MoimId = this.state.MoimId;
         console.log('모임아이디',MoimId)
+    
         Axios.get(`http://52.79.57.173/rest/moimDetail/moimTodoList/${MoimId}`)
         .then(res => {
             console.log('shareplan res', res)
@@ -53,7 +56,8 @@ export default class SharePlan extends Component{
             console.log('planList', this.state.planList)
           
         })
-      
+
+   
     }
     // componentDidUpdate(){
     //     if(this.state.isVisibleCPM === true){
@@ -64,6 +68,12 @@ export default class SharePlan extends Component{
     //     }
     //     console.log('isvisibleCPM did mount', this.state.isVisibleCPM)
     // }
+    _onRefresh = () => {
+        this.setState({refreshing: true});
+        fetchData().then(() => {
+            this.setState({refreshing: false});
+        });
+    }
     _clicked(){
         this.setState({
             isClicked: !this.state.isClicked
@@ -123,11 +133,11 @@ export default class SharePlan extends Component{
 	    }
        
             
-        Axios.post(`http://172.30.1.5:8080/moimDetail/moimTodoList/moimtodostatus/moimtodostatusDetail/${no}`, param) 
+        Axios.post(`http://192.168.0.10:8080/moimDetail/moimTodoList/moimtodostatus/moimtodostatusDetail/${no}`, param) 
         .then(res => {
             console.log("res in")
             console.log("res.data : ", res.data)
-            
+            // this.setState({refresh: true})
         })
    
 
@@ -147,12 +157,46 @@ export default class SharePlan extends Component{
         this.setState({
             planListId: id
         })
+
+    }
+
+    _deleteList = () => {
+        const no = this.state.planListId;
+        console.log('deleteList no',no)
+        Axios.delete(`http://192.168.0.10:8080/moimDetail/moimTodoList/delete/${no}`) 
+        .then(res => {
+            console.log("delete list")
+            console.log("res.data : ", res.data) 
+        })
+    }
+
+    refreshPlanList = () =>{
+        const MoimId = this.state.MoimId;
+        console.log("this.state.planList",this.state.planList);
+        Axios.get(`http://52.79.57.173/rest/moimDetail/moimTodoList/${MoimId}`)
+        .then(res => {
+            console.log('shareplan res', res)
+            const List = res.data.todolist.content;
+            this.setState({
+                planList: List
+            })
+      
+            console.log('planList', this.state.planList)
+          
+        })
+        
+        // this.setState({planList: [ ]})
+      
     }
 
 
     render(){
+       console.log('refreshing from shareplan', this.state.refreshing)
+       console.log('getrefreshing from shareplan', this.state.getRefresh)
         return(
+            
             <View style={styles.container}> 
+               
                 <View style={styles.upSideBar}>                   
                   <Text style={{paddingLeft:10,fontWeight:'bold'}}>상태</Text>
                   <Text style={{paddingLeft:80,fontWeight:'bold'}}>계획</Text>
@@ -181,7 +225,12 @@ export default class SharePlan extends Component{
                                     <View style={styles.planList}><Text>{item.people.name}</Text></View>
                                         <View style={styles.planList}>
                                             <Progress.Bar progress={item.progress * 0.01} width={70} height={20} />
-                                        </View>                
+                                        </View>   
+                                        {this.state.getRefresh?
+                                         (  <RefreshControl
+                                             refreshing={this.state.refreshing}
+                                             onRefresh={this._onRefresh}
+                                            />  ):(null) }             
                                 </View> 
                                 
                             }/>
@@ -239,6 +288,7 @@ export default class SharePlan extends Component{
                                   <View style={styles.editButton}>
                                       <Button 
                                           title="    삭제    "
+                                          onPress={this._deleteList}
                                           color="#778899"
                                           />
                                   </View>
@@ -283,11 +333,17 @@ export default class SharePlan extends Component{
                                   }
                                  }}
                             MoimId={this.state.MoimId}
+                            changeRefresh={(refresh) => {
+                                this.setState({getRefresh: refresh})
+                            }}
+                            refreshPlanList={this.refreshPlanList}
                             />
                           ):(
                         console.log('CreatePlanModal')
                         )}   
                 {console.log('isvisibleCPM', this.state.isVisibleCPM)}
+                
+               
                 {/* 테스트입니다.시작. 기존에 있는isVisible로 bool지정 */}
                 {/* <Button 
                     title="  TypeInput Modal  "

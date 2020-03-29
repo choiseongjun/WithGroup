@@ -6,20 +6,29 @@ import axios from 'axios';
 
 const{width, height} = Dimensions.get('window');
 
+
+
 class CreatePlanModal extends Component{
+    
+constructor(props){
+    super(props);
+    this.refreshPlanList = props.refreshPlanList;
+}
+
+
     state={
         planToDo:'',
         planSpecificToDo:'',
         startDate:'',
         endDate:'',
-        // planData:[
-        //     {Mplan:'', Splan:'', start:'', end:''}
-        // ],
         isvisible:this.props.isvisible,
-        addSplan:[]
+        addSplan:[],
+        chageRefresh:false
         
     }
-   
+
+    
+    
     _controlPlan = (text) =>{
         this.setState({planToDo:text})
         console.log(this.state.planToDo)
@@ -34,12 +43,11 @@ class CreatePlanModal extends Component{
         // var date = new Date().getDate(); //Current Date
         // var month = new Date().getMonth() + 1; //Current Month
         // var year = new Date().getFullYear(); //Current Year
+       
         const no = this.props.MoimId
         console.log('moimid',no)
         let token;
-        
-       
-        
+
         let toDoWrite={};
         toDoWrite.plan_title=this.state.planToDo;
         toDoWrite.from_date= this.state.startDate
@@ -47,11 +55,11 @@ class CreatePlanModal extends Component{
         let toDoWriteList={};
         toDoWriteList.toDoWrite=toDoWrite;
         toDoWriteList.plan_list=this.state.addSplan.join();
-    
+        
         AsyncStorage.getItem("access_token").then((value) => {
             token = value
             console.log("token in CreatePlanModal: ", token);
-            axios.post(`http://172.30.1.5:8080/moimDetail/moimTodoList/moimTodowrite/${no}`, toDoWriteList,{
+            axios.post(`http://52.79.57.173/moimDetail/moimTodoList/moimTodowrite/${no}`, toDoWriteList,{
                 headers:{
                     type:'POST',
                     dataType:'json',
@@ -62,9 +70,15 @@ class CreatePlanModal extends Component{
                 console.log("res in")
                 console.log("res.data : ", res.data)
                 
+                console.log('todoWriteList', toDoWriteList);
+                this.refreshPlanList()
             })
-        }).done();
+        });
         
+        this.setState({chageRefresh:true})
+        this.props.changeRefresh(this.state.chageRefresh)
+
+        console.log('this.state.changeRefresh', this.state.chageRefresh)
     }
     _clickAdd = () => {
         const add = this.state.planSpecificToDo;
@@ -81,7 +95,7 @@ class CreatePlanModal extends Component{
     
 
     render(){
- 
+        console.log('befor changeRefresh', this.state.chageRefresh);
         return(
             <Modal
                 animationType={'slide'}
@@ -201,7 +215,7 @@ class CreatePlanModal extends Component{
                 </View>
 
             </Modal>
-           
+        
            
         );
     }

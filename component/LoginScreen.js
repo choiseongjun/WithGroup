@@ -32,7 +32,7 @@ class LoginScreen extends Component{
      login = (email, password) => {
         alert('email: ' + email + ' password: ' + password)
         
-        axios.post(`http://172.30.1.5:8080/signin`,{email:email,
+        axios.post(`http://52.79.57.173/signin`,{email:email,
         password:password})
         .then(res => {
             console.log("res.data.jwt.accessToken : ", res.data.jwt.accessToken)
