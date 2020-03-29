@@ -106,7 +106,7 @@ class PlanList extends Component {
                         {/* react native 사이클 특이함 this.setstate해줘야 새로고침됨 걍 item.checkClicked 쓰면 새로고침 안되서 작동 안됨 */}
                         {/* <Text style={this.state.clicked ? (item.checkClicked? (styles.completedPlanText) : (styles.planText)) : (styles.planText)}> */}
                         <Text style={this._checkAction(item)}>  
-                            ▶   {item.plan_list},  {item.checkConfirm}
+                            ▶   {item.plan_list}
                             
                         </Text>
                         <View style={styles.Button}><Button title="체크" color="#F08080" onPress={() =>this._clicked(item)}/></View>
