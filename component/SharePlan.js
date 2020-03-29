@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {View,Button,Text,StyleSheet,Dimensions,Modal,ScrollView,FlatList, TouchableOpacity,RefreshControl} from 'react-native';
+import {View,Button,Text,StyleSheet,Dimensions,Modal,ScrollView,FlatList, TouchableOpacity} from 'react-native';
 import * as Progress from 'react-native-progress';
 import PlanList from './PlanList';
 import CreatePlanModal from './CreatePlanModal';
@@ -68,12 +68,7 @@ export default class SharePlan extends Component{
     //     }
     //     console.log('isvisibleCPM did mount', this.state.isVisibleCPM)
     // }
-    _onRefresh = () => {
-        this.setState({refreshing: true});
-        fetchData().then(() => {
-            this.setState({refreshing: false});
-        });
-    }
+
     _clicked(){
         this.setState({
             isClicked: !this.state.isClicked
@@ -99,7 +94,6 @@ export default class SharePlan extends Component{
     //저장 클릭시 수정된 날짜는 사라지고 '0'으로 초기화
     _isSaving(){
         this.setState({
-            isSaving:true,
             isEditing:false,//수정 날짜 초기화
             seeClicked:false
         })
@@ -219,18 +213,14 @@ export default class SharePlan extends Component{
                                                     >
                                                 <View style={{flex:1,justifyContent:'center'}}>
                                                     <Text>{item.plan_title}</Text>
-                                                    {this.state.isSaving ? (<Text>{this.state.formDate}</Text>) : (console.log('nothing'))}
+                                                    {this.state.isSaving ? (<Text>{this.state.formDate}</Text>) : (null)}
                                                 </View>
                                     </TouchableOpacity>
                                     <View style={styles.planList}><Text>{item.people.name}</Text></View>
                                         <View style={styles.planList}>
                                             <Progress.Bar progress={item.progress * 0.01} width={70} height={20} />
                                         </View>   
-                                        {this.state.getRefresh?
-                                         (  <RefreshControl
-                                             refreshing={this.state.refreshing}
-                                             onRefresh={this._onRefresh}
-                                            />  ):(null) }             
+                                                
                                 </View> 
                                 
                             }/>
@@ -260,17 +250,10 @@ export default class SharePlan extends Component{
                                       </View>
                                       ): (
                                       
-                                          console.log('ss',)
+                                          null
                                       //  console.log('끝나는날', this.props.endDate)
                                       ) }
-                                      {this.state.isSaving? (
-                                          <View style={{paddingRight:50, alignItems:'center'}}>
-                                              <Text>{this.state.formDate} + {this.state.expendDate}</Text>
-                                          </View>
-
-                                      ):(
-                                          <Text></Text>
-                                  )}
+                        
                                   <View style={styles.editButton}>
                                       <Button 
                                           title="    수정    "
@@ -339,7 +322,7 @@ export default class SharePlan extends Component{
                             refreshPlanList={this.refreshPlanList}
                             />
                           ):(
-                        console.log('CreatePlanModal')
+                        null
                         )}   
                 {console.log('isvisibleCPM', this.state.isVisibleCPM)}
                 
