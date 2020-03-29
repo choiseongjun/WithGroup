@@ -6,6 +6,13 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 const{width, height} = Dimensions.get('window');
 
+// export const Data1 = (props)=>{
+//     const {children} = props;
+//     return  (
+//             {children}
+//         )
+
+//     }
 class Data1 extends Component{
     constructor(props){
         super(props)

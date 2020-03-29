@@ -12,6 +12,9 @@ import CreatePlan from './component/CreatePlan';
 import {TimeLinesScreen} from './timelines';
 import {AppInfomation} from './Infomation';
 
+import { Provider } from 'react-redux';
+import {store} from './store/store';
+
 const AppNavigator = createStackNavigator({
   HOME: {
     screen: LoginScreen,
@@ -69,3 +72,8 @@ const AppNavigator = createStackNavigator({
 });
 
 export default createAppContainer(AppNavigator);
+// export default  () =>(
+//   <Provider store={store}>
+//     <AppNavigator />
+//   </Provider>
+// );
